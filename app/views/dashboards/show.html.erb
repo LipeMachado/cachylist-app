@@ -1,0 +1,38 @@
+<%= render layout: "shared/app_shell" do %>
+  <div class="topbar">
+    <div>
+      <h1>Boa noite, <%= current_user.display_name %>!</h1>
+      <p>Aqui está um resumo da sua jornada.</p>
+    </div>
+    <%= form_with url: library_path, method: :get, class: "search-form" do |form| %>
+      <%= form.search_field :query, placeholder: "Buscar mídias..." %>
+    <% end %>
+    <%= link_to "+ Nova Mídia", "#", class: "primary-button", data: { action: "modal#open" } %>
+  </div>
+
+  <section class="stats-grid">
+    <%= render "shared/stat_card", icon: "◇", label: "Total de Mídias", value: @stats.total, accent: "purple" %>
+    <%= render "shared/stat_card", icon: "✓", label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
+    <%= render "shared/stat_card", icon: "▷", label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>
+    <%= render "shared/stat_card", icon: "Ⅱ", label: "Pausadas", value: @stats.count(:paused), meta: "#{@stats.percentage(:paused)}%", accent: "orange" %>
+    <%= render "shared/stat_card", icon: "◷", label: "Para Depois", value: @stats.count(:planned), meta: "#{@stats.percentage(:planned)}%", accent: "gray" %>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Biblioteca</h2>
+      <%= link_to "Ver tudo", library_path, class: "ghost-link" %>
+    </div>
+    <div class="kanban-board compact">
+      <% @items_by_status.each do |status, items| %>
+        <div class="kanban-column">
+          <header><span class="status-dot <%= status_class(status) %>"></span><strong><%= status_label(status) %></strong><small><%= @stats.count(status) %></small></header>
+          <% items.each do |item| %>
+            <%= render "shared/media_card", item: item %>
+          <% end %>
+          <%= link_to "+ Adicionar mídia", "#", class: "add-card", data: { action: "modal#open", status_value: status } %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>

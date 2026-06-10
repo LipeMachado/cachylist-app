@@ -1,0 +1,23 @@
+<aside id="app-sidebar" class="sidebar" data-turbo-permanent data-controller="sidebar" data-action="turbo:load@window->sidebar#sync">
+  <%= link_to dashboard_path, class: "brand" do %>
+    <span class="brand-mark">C</span>
+    <span>CACHYLIST</span>
+  <% end %>
+
+  <div class="sidebar-user">
+    <%= link_to profile_path, class: "user-chip" do %>
+      <span class="avatar"><%= current_user.display_name.first %></span>
+      <span><%= current_user.display_name %></span>
+      <span class="user-icon"><%= lucide_icon "user", size: 17 %></span>
+    <% end %>
+  </div>
+
+  <nav class="sidebar-nav">
+    <% sidebar_nav_items.each do |item| %>
+      <%= link_to item[:path], class: "nav-link #{current_page?(item[:path]) ? "active" : ""}", data: { sidebar_target: "link", path: item[:path] } do %>
+        <span class="nav-icon"><%= lucide_icon item[:icon], size: 19 %></span>
+        <span><%= item[:label] %></span>
+      <% end %>
+    <% end %>
+  </nav>
+</aside>

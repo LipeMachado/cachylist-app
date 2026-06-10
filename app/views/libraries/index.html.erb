@@ -1,0 +1,38 @@
+<%= render layout: "shared/app_shell" do %>
+  <div class="topbar">
+    <div>
+      <h1><%= @selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca" %></h1>
+      <p>Pesquise, filtre e acompanhe tudo em um kanban inspirado no Notion.</p>
+    </div>
+    <%= link_to "+ Nova Mídia", "#", class: "primary-button", data: { action: "modal#open", category_value: @selected_category } %>
+  </div>
+
+  <section class="panel">
+    <%= form_with url: request.path, method: :get, class: "filters" do |form| %>
+      <%= form.search_field :query, value: params[:query], placeholder: "Buscar na biblioteca..." %>
+      <% unless @selected_category.present? %>
+        <%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Todas as categorias", selected: params[:category] } %>
+      <% end %>
+      <%= form.select :status, MediaItem.statuses.keys.map { |key| [status_label(key), key] }, { include_blank: "Todos os status", selected: params[:status] } %>
+      <%= form.select :platform, @platforms, { include_blank: "Todas as plataformas", selected: params[:platform] } %>
+      <%= form.submit "Filtrar", class: "secondary-button" %>
+      <%= link_to "Limpar", request.path, class: "ghost-link" %>
+    <% end %>
+
+    <% if @items.any? %>
+      <div class="kanban-board">
+        <% @items_by_status.each do |status, items| %>
+          <div class="kanban-column">
+            <header><span class="status-dot <%= status_class(status) %>"></span><strong><%= status_label(status) %></strong><small><%= items.size %></small></header>
+            <% items.each do |item| %>
+              <%= render "shared/media_card", item: item %>
+            <% end %>
+            <%= link_to "+ Adicionar mídia", "#", class: "add-card", data: { action: "modal#open", status_value: status, category_value: @selected_category } %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state", title: "Sua lista está vazia", text: "Adicione animes, séries, filmes, livros e jogos para começar." %>
+    <% end %>
+  </section>
+<% end %>

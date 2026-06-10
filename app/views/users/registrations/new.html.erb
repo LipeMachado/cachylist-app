@@ -1,0 +1,18 @@
+<section class="auth-page">
+  <div class="auth-art"></div>
+  <div class="auth-panel">
+    <span class="logo-script">CACHYLIST</span>
+    <p>Crie sua conta e organize tudo em um só lugar.</p>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form" }) do |f| %>
+      <%= render "users/shared/error_messages", resource: resource %>
+      <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
+      <label>Senha<%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres" %></label>
+      <label>Confirmar senha<%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita sua senha" %></label>
+      <%= f.submit "Criar conta", class: "primary-button full" %>
+    <% end %>
+
+    <div class="auth-divider"><span>ou</span></div>
+    <%= link_to "Entrar", new_session_path(resource_name), class: "secondary-button full" %>
+  </div>
+</section>

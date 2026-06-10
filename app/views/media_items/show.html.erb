@@ -1,0 +1,26 @@
+<%= render layout: "shared/app_shell" do %>
+  <section class="detail-hero">
+    <img src="<%= cover_for(@media_item) %>" alt="Capa de <%= @media_item.title %>">
+    <div>
+      <span class="pill"><%= category_label(@media_item.category) %></span>
+      <h1><%= @media_item.title %></h1>
+      <p><%= @media_item.description.presence || "Sem descrição cadastrada." %></p>
+      <div class="detail-actions">
+        <%= link_to "Editar", edit_media_item_path(@media_item), class: "primary-button" %>
+        <%= button_to "Remover", media_item_path(@media_item), method: :delete, class: "danger-button", form: { data: { turbo_confirm: "Remover esta mídia?" } } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-grid">
+    <article class="panel"><h2>Status</h2><p><span class="status-dot <%= status_class(@media_item.status) %>"></span> <%= status_label(@media_item.status) %></p></article>
+    <article class="panel"><h2>Progresso</h2><p><%= @media_item.progress_label.presence || "Sem progresso definido" %></p><div class="progress large"><span style="width: <%= @media_item.progress_percentage %>%"></span></div></article>
+    <article class="panel"><h2>Avaliação</h2><p><%= @media_item.rating.present? ? "#{@media_item.rating}/10" : "Não avaliado" %></p></article>
+    <article class="panel"><h2>Plataforma</h2><p><%= @media_item.platform.presence || "Não informada" %></p></article>
+  </section>
+
+  <section class="panel notes-panel">
+    <h2>Notas pessoais</h2>
+    <p><%= simple_format(@media_item.notes.presence || "Nenhuma nota pessoal adicionada.") %></p>
+  </section>
+<% end %>

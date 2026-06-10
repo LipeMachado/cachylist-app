@@ -1,0 +1,35 @@
+<% content_for :title, "CachyList" %>
+
+<section class="landing-hero">
+  <header class="landing-header">
+    <span class="logo-script">CACHYLIST</span>
+    <%= link_to "Entrar ->", new_user_session_path, class: "landing-login" %>
+  </header>
+
+  <div class="landing-copy">
+    <h1>Suas histórias.<br><span>Seu jeito.</span></h1>
+    <span class="title-brush" aria-hidden="true"></span>
+    <p>O lugar onde animes, séries, filmes, livros e jogos se encontram. Organize, acompanhe e aproveite cada momento.</p>
+    <%= link_to "Começar agora", new_user_registration_path, class: "brush-button" %>
+  </div>
+</section>
+
+<section class="category-strip">
+  <p>Tudo que você assiste, lê ou joga.</p>
+  <h2>Em um só lugar.</h2>
+  <div class="landing-categories">
+    <span>▣<small>Animes</small></span>
+    <span>▤<small>Séries</small></span>
+    <span>◉<small>Filmes</small></span>
+    <span>▰<small>Livros</small></span>
+    <span>⌘<small>Jogos</small></span>
+  </div>
+</section>
+
+<section class="pace-section">
+  <div class="pace-copy">
+    <h2>Do seu jeito.<br>No <span>seu ritmo.</span></h2>
+    <span class="title-brush" aria-hidden="true"></span>
+    <p>Acompanhe seu progresso, defina prioridades e nunca perca o que importa.</p>
+  </div>
+</section>

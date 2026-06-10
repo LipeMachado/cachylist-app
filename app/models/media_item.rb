@@ -1,0 +1,46 @@
+class MediaItem < ApplicationRecord
+  belongs_to :user
+
+  enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4 }
+  enum :status, { planned: 0, in_progress: 1, completed: 2, paused: 3, no_date: 4 }
+
+  validates :title, :category, :status, presence: true
+  validates :rating, inclusion: { in: 0..10 }, allow_blank: true
+  validates :release_year, numericality: { only_integer: true, greater_than: 1800, less_than: 2200 }, allow_blank: true
+
+  scope :recent, -> { order(updated_at: :desc, created_at: :desc) }
+  scope :search, ->(term) { where("LOWER(title) LIKE :term OR LOWER(platform) LIKE :term", term: "%#{sanitize_sql_like(term.downcase)}%") }
+  scope :by_category, ->(category) { where(category: category) if categories.key?(category) }
+  scope :by_status, ->(status) { where(status: status) if statuses.key?(status) }
+  scope :by_platform, ->(platform) { where(platform: platform) }
+
+  def progress_label
+    case category
+    when "anime", "series"
+      [ current_season.presence && "S#{current_season}", current_episode.presence && "E#{current_episode}", total_episodes.presence && "de #{total_episodes}" ].compact.join(" • ").presence
+    when "book"
+      return nil if current_page.blank? && total_pages.blank?
+
+      "#{current_page || 0}/#{total_pages || "?"} pág."
+    when "game"
+      hours_played.present? ? "#{hours_played}h jogadas" : nil
+    when "movie"
+      duration_minutes.present? ? "#{duration_minutes} min" : nil
+    end
+  end
+
+  def progress_percentage
+    case category
+    when "anime", "series"
+      return 0 if current_episode.blank? || total_episodes.blank? || total_episodes.zero?
+
+      (current_episode.to_f / total_episodes * 100).clamp(0, 100).round
+    when "book"
+      return 0 if current_page.blank? || total_pages.blank? || total_pages.zero?
+
+      (current_page.to_f / total_pages * 100).clamp(0, 100).round
+    else
+      completed? ? 100 : 0
+    end
+  end
+end

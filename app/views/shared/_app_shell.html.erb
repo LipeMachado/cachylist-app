@@ -1,0 +1,30 @@
+<div class="app-shell" data-controller="modal">
+  <%= render "shared/sidebar" %>
+  <main class="app-main">
+    <%= yield %>
+  </main>
+
+  <div class="media-modal" data-modal-target="modal" hidden>
+    <button class="modal-backdrop" type="button" aria-label="Fechar modal" data-action="modal#requestClose"></button>
+    <section class="modal-dialog" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
+      <header class="modal-header">
+        <div>
+          <p>Nova entrada</p>
+          <h2 id="media-modal-title">Adicionar mídia</h2>
+        </div>
+        <button class="modal-close" type="button" data-action="modal#requestClose">×</button>
+      </header>
+      <%= render "media_items/form", media_item: current_user.media_items.new(status: :planned, category: :anime), modal: true %>
+    </section>
+
+    <div class="confirm-backdrop" data-modal-target="confirmBackdrop" hidden></div>
+    <section class="confirm-modal" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
+      <h3>Sair sem criar?</h3>
+      <p>Você alterou campos do formulário. Se sair agora, as informações serão perdidas.</p>
+      <div>
+        <button class="secondary-button" type="button" data-action="modal#keepEditing">Continuar editando</button>
+        <button class="danger-button" type="button" data-action="modal#discard">Sair sem salvar</button>
+      </div>
+    </section>
+  </div>
+</div>

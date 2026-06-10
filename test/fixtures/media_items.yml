@@ -1,0 +1,51 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  title: MyString
+  description: MyText
+  category: 1
+  status: 1
+  platform: MyString
+  release_year: 2024
+  rating: 1
+  notes: MyText
+  cover_url: https://example.com/cover-one.jpg
+  started_at: 2026-06-10
+  finished_at: 2026-06-10
+  current_episode: 1
+  total_episodes: 1
+  current_season: 1
+  current_page: 1
+  total_pages: 1
+  author: MyString
+  director: MyString
+  duration_minutes: 1
+  hours_played: 1
+  wants_platinum: false
+  platinum_completed: false
+
+two:
+  user: two
+  title: MyString
+  description: MyText
+  category: 1
+  status: 1
+  platform: MyString
+  release_year: 2025
+  rating: 1
+  notes: MyText
+  cover_url: https://example.com/cover-two.jpg
+  started_at: 2026-06-10
+  finished_at: 2026-06-10
+  current_episode: 1
+  total_episodes: 1
+  current_season: 1
+  current_page: 1
+  total_pages: 1
+  author: MyString
+  director: MyString
+  duration_minutes: 1
+  hours_played: 1
+  wants_platinum: false
+  platinum_completed: false

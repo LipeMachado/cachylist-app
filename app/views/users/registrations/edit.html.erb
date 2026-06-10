@@ -1,0 +1,27 @@
+<%= render layout: "shared/app_shell" do %>
+  <div class="page-heading">
+    <h1>Editar Perfil</h1>
+    <p>Atualize e-mail e senha da sua conta CachyList.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "media-form" }) do |f| %>
+    <%= render "users/shared/error_messages", resource: resource %>
+    <section class="form-section">
+      <div class="form-grid two">
+        <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
+        <label>Senha atual<%= f.password_field :current_password, autocomplete: "current-password", required: true, placeholder: "••••••••" %></label>
+        <label>Nova senha<%= f.password_field :password, autocomplete: "new-password", placeholder: "deixe em branco para manter" %></label>
+        <label>Confirmar nova senha<%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita a nova senha" %></label>
+      </div>
+    </section>
+    <div class="form-actions">
+      <%= link_to "Voltar", profile_path, class: "secondary-button" %>
+      <%= f.submit "Salvar perfil", class: "primary-button" %>
+    </div>
+  <% end %>
+
+  <div class="danger-zone">
+    <h2>Zona de perigo</h2>
+    <%= button_to "Cancelar minha conta", registration_path(resource_name), data: { turbo_confirm: "Tem certeza?" }, method: :delete, class: "danger-button" %>
+  </div>
+<% end %>

@@ -1,0 +1,20 @@
+<section class="auth-page">
+  <div class="auth-art"></div>
+  <div class="auth-panel">
+    <span class="logo-script">CACHYLIST</span>
+    <p>Seu lugar. Suas histórias.</p>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "auth-form" }) do |f| %>
+      <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
+      <label>Senha<%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••" %></label>
+      <% if devise_mapping.rememberable? %>
+        <label class="check-inline"><%= f.check_box :remember_me %> Lembrar de mim</label>
+      <% end %>
+      <%= f.submit "Entrar", class: "primary-button full" %>
+    <% end %>
+
+    <div class="auth-divider"><span>ou</span></div>
+    <%= link_to "Criar conta", new_registration_path(resource_name), class: "secondary-button full" %>
+    <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: "auth-link" %>
+  </div>
+</section>

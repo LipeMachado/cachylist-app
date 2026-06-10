@@ -1,0 +1,13 @@
+<section class="auth-page">
+  <div class="auth-art"></div>
+  <div class="auth-panel">
+    <span class="logo-script">CACHYLIST</span>
+    <p>Informe seu e-mail para recuperar a senha.</p>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form" }) do |f| %>
+      <%= render "users/shared/error_messages", resource: resource %>
+      <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
+      <%= f.submit "Enviar instruções", class: "primary-button full" %>
+    <% end %>
+    <%= link_to "Voltar ao login", new_session_path(resource_name), class: "auth-link" %>
+  </div>
+</section>
