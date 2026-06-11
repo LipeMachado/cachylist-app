@@ -4,7 +4,7 @@
       <h1><%= @selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca" %></h1>
       <p>Pesquise, filtre e acompanhe tudo em um kanban inspirado no Notion.</p>
     </div>
-    <%= link_to "+ Nova Mídia", "#", class: "primary-button", data: { action: "modal#open", category_value: @selected_category } %>
+    <%= link_to "#", class: "primary-button", data: { action: "modal#open", category_value: @selected_category } do %><%= lucide_icon "plus", size: 16 %> Nova Mídia<% end %>
   </div>
 
   <section class="panel">
@@ -27,7 +27,7 @@
             <% items.each do |item| %>
               <%= render "shared/media_card", item: item %>
             <% end %>
-            <%= link_to "+ Adicionar mídia", "#", class: "add-card", data: { action: "modal#open", status_value: status, category_value: @selected_category } %>
+            <%= link_to "#", class: "add-card", data: { action: "modal#open", status_value: status, category_value: @selected_category } do %><%= lucide_icon "plus", size: 14 %> Adicionar mídia<% end %>
           </div>
         <% end %>
       </div>

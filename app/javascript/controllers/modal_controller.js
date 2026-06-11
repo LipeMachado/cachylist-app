@@ -17,6 +17,7 @@ export default class extends Controller {
 
     if (event.currentTarget.dataset.categoryValue && this.hasCategoryTarget) {
       this.categoryTarget.value = event.currentTarget.dataset.categoryValue
+      this.categoryTarget.dispatchEvent(new Event("change", { bubbles: true }))
     }
 
     if (event.currentTarget.dataset.statusValue && this.hasStatusTarget) {

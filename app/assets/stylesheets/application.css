@@ -16,6 +16,12 @@
 
 * { box-sizing: border-box; }
 
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(140, 61, 255, 0.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(140, 61, 255, 0.75); }
+html { scrollbar-color: rgba(140, 61, 255, 0.5) transparent; scrollbar-width: thin; }
+
 html, body { margin: 0; min-height: 100%; }
 
 body {
@@ -59,7 +65,8 @@ a, button, select, input[type="checkbox"], input[type="radio"], summary, .nav-li
 .landing-copy h1 span, .pace-section h2 span { color: var(--purple); }
 .landing-copy p, .pace-section p { color: #d8d4df; font-size: 1.25rem; line-height: 1.5; max-width: 470px; }
 .title-brush { display: block; width: 112px; height: 18px; margin: 12px 0 16px; background: url("brush.svg") left center / contain no-repeat; filter: drop-shadow(0 0 16px rgba(140, 61, 255, 0.42)); }
-.brush-button, .primary-button { display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 54px; border: 0; border-radius: 9px; padding: 0 28px; color: #fff; font-weight: 800; cursor: pointer; white-space: nowrap; background: linear-gradient(135deg, #6d2ee8, #9c4dff); box-shadow: 0 20px 40px rgba(115, 54, 229, 0.28); }
+.brush-button, .primary-button { display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 54px; border: 0; border-radius: 9px; padding: 0 28px; color: #fff; font-weight: 800; cursor: pointer; white-space: nowrap; background: linear-gradient(135deg, #6d2ee8, #9c4dff); box-shadow: 0 20px 40px rgba(115, 54, 229, 0.28); transition: opacity 0.2s, box-shadow 0.2s; }
+.brush-button:hover, .primary-button:hover { opacity: 0.9; box-shadow: 0 20px 50px rgba(115, 54, 229, 0.45); }
 .brush-button { margin-top: 16px; min-width: 0; text-transform: uppercase; background: linear-gradient(90deg, #7c3bea, #9f50ff 80%, rgba(159,80,255,0)); }
 .category-strip { padding: 52px 6vw 32px; text-align: center; background: #05070d; }
 .category-strip p { color: var(--purple-2); font-family: "Bebas Neue", Inter, sans-serif; font-size: 1.6rem; font-style: italic; margin: 0; }
@@ -100,9 +107,11 @@ a, button, select, input[type="checkbox"], input[type="radio"], summary, .nav-li
 .auth-form { display: grid; gap: 20px; }
 label { color: #ddd9e7; display: grid; gap: 10px; font-weight: 600; }
 input, textarea, select { width: 100%; border: 1px solid var(--stroke); border-radius: 11px; color: var(--text); background: rgba(10, 14, 23, 0.74); padding: 15px 17px; outline: none; }
-select { appearance: none; padding-right: 42px; background-image: linear-gradient(45deg, transparent 50%, #c9b7ff 50%), linear-gradient(135deg, #c9b7ff 50%, transparent 50%), linear-gradient(145deg, rgba(32,38,54,.9), rgba(16,20,31,.88)); background-position: calc(100% - 21px) 52%, calc(100% - 15px) 52%, 0 0; background-size: 6px 6px, 6px 6px, 100% 100%; background-repeat: no-repeat; }
+select { appearance: none; padding-right: 42px; color-scheme: dark; background-image: linear-gradient(45deg, transparent 50%, #c9b7ff 50%), linear-gradient(135deg, #c9b7ff 50%, transparent 50%), linear-gradient(145deg, rgba(32,38,54,.9), rgba(16,20,31,.88)); background-position: calc(100% - 21px) 52%, calc(100% - 15px) 52%, 0 0; background-size: 6px 6px, 6px 6px, 100% 100%; background-repeat: no-repeat; transition: border-color 0.2s; }
+select option { background: #050505; color: var(--text); }
 select:hover { border-color: rgba(166, 102, 255, .5); }
 input[type="checkbox"] { appearance: none; width: 20px; height: 20px; display: inline-grid; place-items: center; flex: 0 0 20px; margin: 0; padding: 0; border-radius: 6px; border: 1px solid rgba(166, 102, 255, .5); background: rgba(20, 24, 36, .88); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 input[type="checkbox"]::before { content: ""; width: 10px; height: 10px; transform: scale(0); border-radius: 3px; background: linear-gradient(135deg, var(--purple), var(--purple-2)); transition: transform .14s ease; }
 input[type="checkbox"]:checked::before { transform: scale(1); }
 input[type="checkbox"]:focus { border-color: rgba(166, 102, 255, .86); box-shadow: 0 0 0 4px rgba(140, 61, 255, .14); }
@@ -110,13 +119,17 @@ textarea { resize: vertical; }
 input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.72); box-shadow: 0 0 0 4px rgba(140, 61, 255, 0.14); }
 .full { width: fit-content; }
 .auth-form .primary-button, .auth-panel > .secondary-button, .auth-link { align-self: center; justify-self: center; }
-.secondary-button, .danger-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 48px; border-radius: 9px; padding: 0 22px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.secondary-button, .danger-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 48px; border-radius: 9px; padding: 0 22px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: background 0.2s, opacity 0.2s, border-color 0.2s; }
 .secondary-button { border: 1px solid rgba(166, 102, 255, 0.45); color: #c99dff; background: rgba(255,255,255,0.02); }
+.secondary-button:hover { background: rgba(166, 102, 255, 0.12); }
 .danger-button { border: 1px solid rgba(255,77,109,.45); color: #fff; background: rgba(255,77,109,.12); cursor: pointer; }
+.danger-button:hover { background: rgba(255, 77, 109, 0.22); }
 .ghost-link { color: #c7b7e6; }
+.ghost-link:hover { opacity: 0.75; }
 .auth-divider { display: flex; align-items: center; gap: 18px; color: #878493; margin: 28px 0; }
 .auth-divider::before, .auth-divider::after { content: ""; height: 1px; flex: 1; background: var(--stroke); }
-.auth-link { color: var(--purple-2); margin-top: 28px; text-align: center; font-weight: 700; }
+.auth-link { color: var(--purple-2); margin-top: 28px; text-align: center; font-weight: 700; transition: opacity 0.2s; }
+.auth-link:hover { opacity: 0.75; }
 .check-inline { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .check-inline input, .check-row input { width: auto; }
 
@@ -138,11 +151,13 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 
 /* ── Force square corners & no shadows ─────────────────── */
 
+.app-body .hidden { display: none; }
+
 .app-body *,
 .app-body *::before,
 .app-body *::after {
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* ── App shell ─────────────────────────────────────────── */
@@ -150,7 +165,8 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 .app-body .app-shell {
   display: grid;
   grid-template-columns: 272px 1fr;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
@@ -164,7 +180,7 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   background: var(--bg);
   border-right: 1px solid var(--line);
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr auto;
 }
 
 .app-body .brand {
@@ -194,7 +210,11 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 
 .app-body .sidebar-user {
   padding: 24px 28px;
-  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  transition: background 0.15s;
+}
+.app-body .sidebar-user:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .app-body .user-chip {
@@ -239,13 +259,14 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   font-size: 13px;
   letter-spacing: .02em;
   white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 
 .app-body .nav-link:hover,
 .app-body .nav-link.active {
   color: var(--text);
   background: rgba(255, 255, 255, .03);
-  box-shadow: inset 2px 0 0 var(--accent) !important;
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 
 .app-body .nav-icon,
@@ -268,6 +289,7 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 .app-body .app-main {
   padding: 0;
   overflow-x: hidden;
+  overflow-y: auto;
   background: var(--bg);
 }
 
@@ -278,12 +300,17 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   grid-template-columns: 1fr minmax(240px, 320px) auto;
   gap: 0;
   align-items: stretch;
+  height: 96px;
+  overflow: hidden;
   border-bottom: 1px solid var(--line);
 }
 
 .app-body .topbar > * {
-  padding: 36px 40px;
+  padding: 12px 40px;
   border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .app-body .topbar > *:last-child {
@@ -291,11 +318,16 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 }
 
 .app-body .topbar p {
-  margin-top: 14px;
-  font-size: 13px;
-  line-height: 1.6;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.3;
   color: var(--muted);
   letter-spacing: .01em;
+}
+
+.app-body .topbar h1 {
+  font-size: clamp(18px, 2.2vw, 24px);
+  line-height: 1.1;
 }
 
 .app-body .topbar .search-form {
@@ -381,7 +413,7 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 .app-body .stat-icon {
   font-size: 11px;
   color: var(--accent);
-  background: transparent !important;
+  background: transparent;
   letter-spacing: .12em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -444,6 +476,11 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--accent);
+  transition: opacity 0.15s;
+}
+
+.app-body .panel-header a:hover {
+  opacity: 0.7;
 }
 
 .app-body .panel-header small {
@@ -506,16 +543,22 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 .app-body textarea:focus,
 .app-body select:focus {
   border-color: var(--accent);
-  box-shadow: inset 0 -2px 0 var(--accent) !important;
+  box-shadow: inset 0 -2px 0 var(--accent);
 }
 
 .app-body select {
   appearance: none;
+  color-scheme: dark;
   background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
   background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
   padding-right: 36px;
+}
+
+.app-body select option {
+  background: #050505;
+  color: var(--text);
 }
 
 .app-body input[type="checkbox"] {
@@ -564,6 +607,7 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   white-space: nowrap;
   cursor: pointer;
   font-family: inherit;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .app-body .primary-button {
@@ -577,6 +621,10 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 .app-body .ghost-link:hover,
 .app-body .add-card:hover {
   background: var(--surface);
+}
+
+.app-body .danger-button:hover {
+  background: rgba(255, 77, 109, 0.18);
 }
 
 .app-body .topbar .primary-button {
@@ -662,6 +710,10 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 
 .app-body .media-card:hover {
   background: var(--surface);
+}
+
+.app-body .media-card-link:hover {
+  opacity: 0.85;
 }
 
 .app-body .media-card-link {
@@ -860,13 +912,17 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
 
 .app-body .form-grid {
   display: grid;
-  gap: 1px;
-  background: var(--line);
+  gap: 0;
+  background: transparent;
 }
 
 .app-body .form-grid > * {
-  background: var(--bg);
   padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.app-body .form-grid > *:last-child {
+  border-bottom: 0;
 }
 
 .app-body .form-grid.two {
@@ -1118,6 +1174,11 @@ input:focus, textarea:focus, select:focus { border-color: rgba(166, 102, 255, 0.
   place-items: center;
   font-family: inherit;
   flex: 0 0 36px;
+  transition: background 0.15s, color 0.15s;
+}
+.app-body .modal-close:hover {
+  background: var(--surface);
+  color: var(--text);
 }
 
 .app-body .modal-close:hover {

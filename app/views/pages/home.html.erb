@@ -3,7 +3,7 @@
 <section class="landing-hero">
   <header class="landing-header">
     <span class="logo-script">CACHYLIST</span>
-    <%= link_to "Entrar ->", new_user_session_path, class: "landing-login" %>
+    <%= link_to new_user_session_path, class: "landing-login" do %>Entrar <%= lucide_icon "arrow-right", size: 14 %><% end %>
   </header>
 
   <div class="landing-copy">

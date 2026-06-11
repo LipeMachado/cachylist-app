@@ -10,7 +10,7 @@
     <h2>Informações gerais</h2>
     <div class="form-grid two">
       <label>Título<%= form.text_field :title, required: true, placeholder: "One Piece" %></label>
-      <label>Categoria<%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Selecione uma categoria" }, data: (local_assigns[:modal] ? { modal_target: "category" } : {}) %></label>
+      <label>Categoria<%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Selecione uma categoria" }, data: (local_assigns[:modal] ? { modal_target: "category", action: "change->form-category#change" } : { action: "change->form-category#change" }) %></label>
       <label>Status<%= form.select :status, MediaItem.statuses.keys.map { |key| [status_label(key), key] }, { include_blank: "Selecione um status" }, data: (local_assigns[:modal] ? { modal_target: "status" } : {}) %></label>
       <label>Plataforma<%= form.text_field :platform, placeholder: "Crunchyroll, Kindle, Steam..." %></label>
       <label>Ano de lançamento<%= form.number_field :release_year, min: 1800, max: 2200, placeholder: "ex: 2024" %></label>
@@ -22,22 +22,47 @@
 
   <section class="form-section">
     <h2>Progresso</h2>
-    <div class="form-grid three">
+    <div class="form-grid three" data-controller="form-category">
       <label>Data de início<%= form.date_field :started_at, placeholder: "dd/mm/aaaa" %></label>
       <label>Data de conclusão<%= form.date_field :finished_at, placeholder: "dd/mm/aaaa" %></label>
-      <label>Temporada atual<%= form.number_field :current_season, min: 0, placeholder: "ex: 1" %></label>
-      <label>Episódio atual<%= form.number_field :current_episode, min: 0, placeholder: "ex: 12" %></label>
-      <label>Total de episódios<%= form.number_field :total_episodes, min: 0, placeholder: "ex: 24" %></label>
-      <label>Autor<%= form.text_field :author, placeholder: "Nome do autor" %></label>
-      <label>Página atual<%= form.number_field :current_page, min: 0, placeholder: "ex: 150" %></label>
-      <label>Total de páginas<%= form.number_field :total_pages, min: 0, placeholder: "ex: 350" %></label>
-      <label>Diretor<%= form.text_field :director, placeholder: "Nome do diretor" %></label>
-      <label>Duração (min)<%= form.number_field :duration_minutes, min: 0, placeholder: "ex: 120" %></label>
-      <label>Horas jogadas<%= form.number_field :hours_played, min: 0, placeholder: "ex: 40" %></label>
-      <div class="check-row">
-        <label><%= form.check_box :wants_platinum %> Deseja platinar</label>
-        <label><%= form.check_box :platinum_completed %> Platinado</label>
+
+      <div data-form-category-target="group" data-category="anime series">
+        <label>Temporada atual<%= form.number_field :current_season, min: 0, placeholder: "ex: 1" %></label>
       </div>
+      <div data-form-category-target="group" data-category="anime series">
+        <label>Episódio atual<%= form.number_field :current_episode, min: 0, placeholder: "ex: 12" %></label>
+      </div>
+      <div data-form-category-target="group" data-category="anime series">
+        <label>Total de episódios<%= form.number_field :total_episodes, min: 0, placeholder: "ex: 24" %></label>
+      </div>
+
+      <div data-form-category-target="group" data-category="book">
+        <label>Autor<%= form.text_field :author, placeholder: "Nome do autor" %></label>
+      </div>
+      <div data-form-category-target="group" data-category="book">
+        <label>Página atual<%= form.number_field :current_page, min: 0, placeholder: "ex: 150" %></label>
+      </div>
+      <div data-form-category-target="group" data-category="book">
+        <label>Total de páginas<%= form.number_field :total_pages, min: 0, placeholder: "ex: 350" %></label>
+      </div>
+
+      <div data-form-category-target="group" data-category="movie">
+        <label>Diretor<%= form.text_field :director, placeholder: "Nome do diretor" %></label>
+      </div>
+      <div data-form-category-target="group" data-category="movie">
+        <label>Duração (min)<%= form.number_field :duration_minutes, min: 0, placeholder: "ex: 120" %></label>
+      </div>
+
+      <div data-form-category-target="group" data-category="game">
+        <label>Horas jogadas<%= form.number_field :hours_played, min: 0, placeholder: "ex: 40" %></label>
+      </div>
+      <div data-form-category-target="group" data-category="game" class="span-two">
+        <div class="check-row">
+          <label><%= form.check_box :wants_platinum %> Deseja platinar</label>
+          <label><%= form.check_box :platinum_completed %> Platinado</label>
+        </div>
+      </div>
+
       <label class="span-three">Notas pessoais<%= form.text_area :notes, rows: 5, placeholder: "Suas impressões, anotações, spoilers..." %></label>
     </div>
   </section>

@@ -4,14 +4,6 @@
     <span>CACHYLIST</span>
   <% end %>
 
-  <div class="sidebar-user">
-    <%= link_to profile_path, class: "user-chip" do %>
-      <span class="avatar"><%= current_user.display_name.first %></span>
-      <span><%= current_user.display_name %></span>
-      <span class="user-icon"><%= lucide_icon "user", size: 17 %></span>
-    <% end %>
-  </div>
-
   <nav class="sidebar-nav">
     <% sidebar_nav_items.each do |item| %>
       <%= link_to item[:path], class: "nav-link #{current_page?(item[:path]) ? "active" : ""}", data: { sidebar_target: "link", path: item[:path] } do %>
@@ -20,4 +12,12 @@
       <% end %>
     <% end %>
   </nav>
+
+  <%= link_to profile_path, class: "sidebar-user" do %>
+    <div class="user-chip">
+      <span class="avatar"><%= current_user.display_name.first %></span>
+      <span><%= current_user.display_name %></span>
+      <span class="user-icon"><%= lucide_icon "user", size: 17 %></span>
+    </div>
+  <% end %>
 </aside>

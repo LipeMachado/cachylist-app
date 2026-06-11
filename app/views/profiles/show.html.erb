@@ -10,8 +10,8 @@
   </div>
 
   <section class="stats-grid">
-    <%= render "shared/stat_card", icon: "◇", label: "Total de Mídias", value: @stats.total, accent: "purple" %>
-    <%= render "shared/stat_card", icon: "✓", label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
-    <%= render "shared/stat_card", icon: "▷", label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>
+    <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total de Mídias", value: @stats.total, accent: "purple" %>
+    <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
+    <%= render "shared/stat_card", icon: lucide_icon("play", size: 18), label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>
   </section>
 <% end %>

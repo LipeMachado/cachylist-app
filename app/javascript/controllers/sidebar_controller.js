@@ -5,6 +5,16 @@ export default class extends Controller {
 
   connect() {
     this.sync()
+
+    this.linkTargets.forEach((link) => {
+      link.addEventListener("click", () => this.setActive(link))
+    })
+  }
+
+  setActive(clicked) {
+    this.linkTargets.forEach((link) => {
+      link.classList.toggle("active", link === clicked)
+    })
   }
 
   sync() {
@@ -12,9 +22,11 @@ export default class extends Controller {
 
     this.linkTargets.forEach((link) => {
       const linkPath = link.dataset.path
-      const active = linkPath === "/library" ? currentPath === linkPath : currentPath === linkPath
+      const isMatch = linkPath === "/library"
+        ? currentPath === linkPath
+        : currentPath === linkPath
 
-      link.classList.toggle("active", active)
+      link.classList.toggle("active", isMatch)
     })
   }
 }
