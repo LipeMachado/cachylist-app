@@ -1,18 +1,34 @@
-<section class="auth-page">
-  <div class="auth-art"></div>
-  <div class="auth-panel">
-    <span class="logo-script">CACHYLIST</span>
-    <p>Crie sua conta e organize tudo em um só lugar.</p>
+<section class="w-screen min-h-screen relative grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-[var(--page-bg)]">
+  <div class="auth-art min-h-screen"></div>
+  <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto">
+    <span class="text-[var(--purple-2)] font-['Bebas_Neue',Inter,sans-serif] text-[clamp(2.8rem,5vw,3.5rem)] italic tracking-[-.04em] text-center block">CACHYLIST</span>
+    <p class="text-[#c4c0ca] text-[1.15rem] m-0 mb-[42px] text-center">Crie sua conta e organize tudo em um só lugar.</p>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form" }) do |f| %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "grid gap-5" }) do |f| %>
       <%= render "users/shared/error_messages", resource: resource %>
-      <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
-      <label>Senha<%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres" %></label>
-      <label>Confirmar senha<%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita sua senha" %></label>
-      <%= f.submit "Criar conta", class: "primary-button full" %>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
+      <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Senha
+        <span class="relative block" data-controller="password-visibility">
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none", data: { password_visibility_target: "input" } %>
+          <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-white" tabindex="-1" aria-label="Mostrar senha">
+            <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
+            <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
+          </button>
+        </span>
+      </label>
+      <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Confirmar senha
+        <span class="relative block" data-controller="password-visibility">
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita sua senha", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none", data: { password_visibility_target: "input" } %>
+          <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-white" tabindex="-1" aria-label="Mostrar senha">
+            <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
+            <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
+          </button>
+        </span>
+      </label>
+      <%= f.submit "Criar conta", class: "primary-button inline-flex items-center justify-center w-full min-h-[54px] border-0 px-7 text-white font-extrabold cursor-pointer whitespace-nowrap" %>
     <% end %>
 
-    <div class="auth-divider"><span>ou</span></div>
-    <%= link_to "Entrar", new_session_path(resource_name), class: "secondary-button full" %>
+    <div class="flex items-center gap-[18px] text-[#878493] my-7"><span>ou</span></div>
+    <%= link_to "Entrar", new_session_path(resource_name), class: "inline-flex items-center justify-center w-full min-h-[48px] px-[22px] border border-[var(--line)] text-[var(--accent-strong)] bg-transparent font-bold whitespace-nowrap cursor-pointer transition-[background,opacity,border-color] duration-200 hover:bg-[var(--hover-bg)]" %>
   </div>
 </section>

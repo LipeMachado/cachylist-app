@@ -1,30 +1,119 @@
-<div class="app-shell" data-controller="modal">
+<div class="app-frame grid grid-cols-[280px_1fr] overflow-hidden border border-[var(--line)] bg-[var(--bg)]" data-controller="modal">
   <%= render "shared/sidebar" %>
   <main class="app-main">
     <%= yield %>
   </main>
 
-  <div class="media-modal" data-modal-target="modal" hidden>
-    <button class="modal-backdrop" type="button" aria-label="Fechar modal" data-action="modal#requestClose"></button>
-    <section class="modal-dialog" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
-      <header class="modal-header">
+  <div class="fixed inset-0 z-[80] grid place-items-start justify-center px-8 py-8" data-modal-target="modal" hidden>
+    <button class="absolute inset-0 bg-[var(--overlay-bg)] cursor-pointer border-0" type="button" aria-label="Fechar modal" data-action="modal#requestClose"></button>
+    <section class="relative z-10 w-[min(1100px,calc(100vw-64px))] max-h-[calc(100vh-64px)] overflow-auto bg-[var(--bg)] border border-[var(--line)] shadow-[0_30px_90px_rgba(0,0,0,.65)]" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
+      <header class="min-h-[72px] px-8 py-5 border-b border-[var(--line)] flex justify-between items-center gap-[18px] bg-[var(--surface)]">
         <div>
-          <p>Nova entrada</p>
-          <h2 id="media-modal-title">Adicionar mídia</h2>
+          <p class="text-[10px] font-semibold tracking-[.18em] uppercase text-[var(--accent-strong)] m-0 mb-0.5">Nova entrada</p>
+          <h2 id="media-modal-title" class="text-2xl font-black uppercase tracking-[-.06em] m-0" data-modal-target="title">Adicionar mídia</h2>
         </div>
-        <button class="modal-close" type="button" data-action="modal#requestClose"><%= lucide_icon "x", size: 18 %></button>
+        <button class="w-9 h-9 border border-[var(--line)] bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer flex-[0_0_36px] hover:bg-[var(--surface)] hover:text-[var(--text)]" type="button" data-action="modal#requestClose"><%= lucide_icon "x", size: 18 %></button>
       </header>
       <%= render "media_items/form", media_item: current_user.media_items.new(status: :planned, category: :anime), modal: true %>
     </section>
 
-    <div class="confirm-backdrop" data-modal-target="confirmBackdrop" hidden></div>
-    <section class="confirm-modal" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
-      <h3>Sair sem criar?</h3>
-      <p>Você alterou campos do formulário. Se sair agora, as informações serão perdidas.</p>
-      <div>
-        <button class="secondary-button" type="button" data-action="modal#keepEditing">Continuar editando</button>
-        <button class="danger-button" type="button" data-action="modal#discard">Sair sem salvar</button>
+    <div data-modal-target="confirmBackdrop" hidden></div>
+    <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
+      <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair sem criar?</h3>
+      <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você alterou campos do formulário. Se sair agora, as informações serão perdidas.</p>
+      <div class="flex gap-3 justify-end flex-wrap">
+        <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#keepEditing">Continuar editando</button>
+        <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" type="button" data-action="modal#discard">Sair sem salvar</button>
       </div>
     </section>
   </div>
+
+  <div data-modal-target="confirmDeleteBackdrop" hidden></div>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmDelete" role="alertdialog" aria-modal="true" hidden>
+    <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Cancelar conta?</h3>
+    <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Esta ação é irreversível. Todos os seus dados serão permanentemente removidos.</p>
+    <div class="flex gap-3 justify-end flex-wrap">
+      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#cancelDelete">Voltar</button>
+      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" type="button" data-action="modal#confirmDelete">Sim, cancelar conta</button>
+    </div>
+  </section>
+
+  <div data-modal-target="confirmLogoutBackdrop" hidden></div>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmLogout" role="alertdialog" aria-modal="true" hidden>
+    <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair da conta?</h3>
+    <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você será desconectado da sua conta CachyList.</p>
+    <div class="flex gap-3 justify-end flex-wrap">
+      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#cancelLogout">Voltar</button>
+      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" type="button" data-action="modal#confirmLogout">Sim, sair</button>
+    </div>
+  </section>
+
+  <div data-modal-target="passwordBackdrop" hidden></div>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="passwordModal" role="dialog" aria-modal="true" hidden>
+    <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Alterar senha</h3>
+    <%= form_for current_user, as: :user, url: registration_path(:user), html: { method: :put, class: "grid gap-4" } do |f| %>
+      <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Senha atual
+        <span class="relative block" data-controller="password-visibility">
+          <%= f.password_field :current_password, autocomplete: "current-password", required: true, placeholder: "••••••••", class: "w-full border border-[var(--line)] min-h-[40px] px-3 text-[13px] pr-10 bg-transparent text-[var(--text)]", data: { password_visibility_target: "input" } %>
+          <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-[var(--text)]" tabindex="-1" aria-label="Mostrar senha">
+            <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
+            <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
+          </button>
+        </span>
+      </label>
+      <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Nova senha
+        <span class="relative block" data-controller="password-visibility">
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{Devise.password_length.first} caracteres", class: "w-full border border-[var(--line)] min-h-[40px] px-3 text-[13px] pr-10 bg-transparent text-[var(--text)]", data: { password_visibility_target: "input" } %>
+          <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-[var(--text)]" tabindex="-1" aria-label="Mostrar senha">
+            <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
+            <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
+          </button>
+        </span>
+      </label>
+      <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Confirmar nova senha
+        <span class="relative block" data-controller="password-visibility">
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita a nova senha", class: "w-full border border-[var(--line)] min-h-[40px] px-3 text-[13px] pr-10 bg-transparent text-[var(--text)]", data: { password_visibility_target: "input" } %>
+          <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-[var(--text)]" tabindex="-1" aria-label="Mostrar senha">
+            <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
+            <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
+          </button>
+        </span>
+      </label>
+      <div>
+        <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#closePasswordModal">Cancelar</button>
+        <%= f.submit "Salvar senha", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
+      </div>
+    <% end %>
+  </section>
+
+  <div data-modal-target="avatarBackdrop" hidden></div>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(720px,calc(100vw-48px))] max-h-[calc(100dvh-80px)] overflow-auto -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="avatarModal" role="dialog" aria-modal="true" hidden>
+    <div class="flex items-start justify-between gap-6 mb-6">
+      <div>
+        <p class="brutalist-kicker mb-2">Perfil</p>
+        <h3 class="text-2xl font-black uppercase tracking-[-.06em] m-0">Escolher avatar</h3>
+      </div>
+      <button class="w-9 h-9 border border-[var(--line)] bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#closeAvatarModal"><%= lucide_icon "x", size: 18 %></button>
+    </div>
+
+    <%= form_with url: avatar_user_path(current_user), method: :patch, class: "grid gap-6" do |form| %>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-3">
+        <% avatar_options.each do |avatar| %>
+          <label class="block cursor-pointer">
+            <%= radio_button_tag :avatar, avatar, current_user.avatar == avatar, class: "peer sr-only" %>
+            <span class="block aspect-square border border-[var(--line)] p-1 bg-[var(--bg)] transition-[border-color,background] duration-150 peer-checked:border-[var(--accent-strong)] peer-checked:bg-[var(--hover-bg)] hover:bg-[var(--hover-bg)]">
+              <%= image_tag avatar, alt: "Avatar", class: "w-full h-full object-cover grayscale-[15%]" %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button class="inline-flex items-center justify-center min-h-[44px] px-5 border border-[var(--line)] bg-transparent text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase cursor-pointer hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#closeAvatarModal">Cancelar</button>
+        <%= form.submit "Salvar avatar", class: "inline-flex items-center justify-center min-h-[44px] px-5 border border-[var(--line)] bg-[var(--panel-bg)] text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase cursor-pointer hover:bg-[var(--hover-bg)]" %>
+      </div>
+    <% end %>
+  </section>
 </div>
+
+<%= form_with url: destroy_user_session_path, method: :delete, id: "logout-form", style: "display:none" do %><% end %>
+<%= form_with url: registration_path(:user), method: :delete, id: "delete-account-form", style: "display:none" do %><% end %>

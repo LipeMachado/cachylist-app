@@ -1,5 +1,5 @@
 class MediaItemsController < ApplicationController
-  before_action :set_media_item, only: %i[show edit update destroy]
+  before_action :set_media_item, only: %i[show edit update destroy update_status]
 
   def index
     redirect_to library_path
@@ -31,6 +31,11 @@ class MediaItemsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def update_status
+    @media_item.update!(status: params[:status])
+    head :ok
   end
 
   def destroy

@@ -1,13 +1,13 @@
-<section class="auth-page">
-  <div class="auth-art"></div>
-  <div class="auth-panel">
-    <span class="logo-script">CACHYLIST</span>
-    <p>Informe seu e-mail para recuperar a senha.</p>
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form" }) do |f| %>
+<section class="w-screen min-h-screen relative grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-[var(--page-bg)]">
+  <div class="auth-art min-h-screen"></div>
+  <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto">
+    <span class="text-[var(--purple-2)] font-['Bebas_Neue',Inter,sans-serif] text-[clamp(2.8rem,5vw,3.5rem)] italic tracking-[-.04em] text-center block">CACHYLIST</span>
+    <p class="text-[#c4c0ca] text-[1.15rem] m-0 mb-[42px] text-center">Informe seu e-mail para recuperar a senha.</p>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "grid gap-5" }) do |f| %>
       <%= render "users/shared/error_messages", resource: resource %>
-      <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
-      <%= f.submit "Enviar instruções", class: "primary-button full" %>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
+      <%= f.submit "Enviar instruções", class: "primary-button inline-flex items-center justify-center w-full min-h-[54px] border-0 px-7 text-white font-extrabold cursor-pointer whitespace-nowrap" %>
     <% end %>
-    <%= link_to "Voltar ao login", new_session_path(resource_name), class: "auth-link" %>
+    <%= link_to "Voltar ao login", new_session_path(resource_name), class: "auth-link text-[var(--purple-2)] mt-7 text-center font-bold transition-opacity duration-200 hover:opacity-75" %>
   </div>
 </section>

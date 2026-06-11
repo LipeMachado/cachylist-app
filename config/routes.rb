@@ -1,28 +1,40 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, path: "", path_names: {
+    sign_in: "login",
+    sign_up: "register",
+    sign_out: "logout"
+  }, controllers: { registrations: "users/registrations" }
 
-  authenticated :user do
-    root "dashboards#show", as: :authenticated_root
+  root "pages#home"
+
+  get "/users/edit" => redirect("/edit")
+  get "/users/sign_in" => redirect("/login")
+  get "/users/sign_up" => redirect("/register")
+  get "/users/password/new" => redirect("/password/new")
+  get "/users/password/edit" => redirect("/password/edit")
+
+  scope "/app" do
+    get "/", to: "dashboards#show", as: :dashboard
+
+    get "library", to: "libraries#index", as: :library
+    get "library/:category", to: "libraries#index", as: :category_library,
+      constraints: { category: /animes|series|movies|books|games/ }
+
+    resources :users, only: :show do
+      member do
+        patch :avatar
+      end
+    end
+
+    resources :media_items do
+      member do
+        patch :update_status
+      end
+    end
+
+    get "tmdb/search", to: "tmdb#search"
+    get "tmdb/details", to: "tmdb#details"
   end
 
-  unauthenticated do
-    root "pages#home"
-  end
-
-  resource :dashboard, only: :show
-  resource :profile, only: :show
-
-  get "library", to: "libraries#index", as: :library
-  get "library/:category", to: "libraries#index", as: :category_library,
-    constraints: { category: /animes|series|movies|books|games/ }
-
-  resources :media_items
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 end

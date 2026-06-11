@@ -16,4 +16,14 @@ module ApplicationHelper
       { label: "Jogos", path: category_library_path("games"), icon: "gamepad-2" }
     ]
   end
+
+  def avatar_options
+    Rails.root.join("app/assets/images/avatar").children.select(&:file?).map { |path| "avatar/#{path.basename}" }.sort_by do |path|
+      path[/\d+/].to_i
+    end
+  end
+
+  def avatar_image_for(user)
+    user.avatar if user.avatar.present? && avatar_options.include?(user.avatar)
+  end
 end

@@ -1,27 +1,27 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="page-heading">
-    <h1>Editar Perfil</h1>
-    <p>Atualize e-mail e senha da sua conta CachyList.</p>
+  <div class="px-10 py-10 border-b border-[var(--line)]">
+    <h1 class="text-xl font-extrabold tracking-[-.03em] m-0">Editar Perfil</h1>
+    <p class="mt-3 text-sm leading-[1.7] text-[var(--muted)]">Atualize e-mail e senha da sua conta CachyList.</p>
   </div>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "media-form" }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "grid" }) do |f| %>
     <%= render "users/shared/error_messages", resource: resource %>
-    <section class="form-section">
-      <div class="form-grid two">
-        <label>E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %></label>
-        <label>Senha atual<%= f.password_field :current_password, autocomplete: "current-password", required: true, placeholder: "••••••••" %></label>
-        <label>Nova senha<%= f.password_field :password, autocomplete: "new-password", placeholder: "deixe em branco para manter" %></label>
-        <label>Confirmar nova senha<%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita a nova senha" %></label>
+    <section class="px-10 py-10 border-b border-[var(--line)]">
+      <div class="grid grid-cols-1 bg-transparent">
+        <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)]" %></label>
       </div>
     </section>
-    <div class="form-actions">
-      <%= link_to "Voltar", profile_path, class: "secondary-button" %>
-      <%= f.submit "Salvar perfil", class: "primary-button" %>
+    <div class="px-10 py-5 border-b border-[var(--line)] flex">
+      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--surface)] gap-2" type="button" data-action="modal#openPasswordModal"><%= lucide_icon "lock", size: 16 %> Alterar senha</button>
+    </div>
+    <div class="flex justify-end gap-3 px-10 py-6 border-b border-[var(--line)]">
+      <%= link_to "Voltar", user_path(current_user), class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--surface)]" %>
+      <%= f.submit "Salvar perfil", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--accent)] bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150" %>
     </div>
   <% end %>
 
-  <div class="danger-zone">
-    <h2>Zona de perigo</h2>
-    <%= button_to "Cancelar minha conta", registration_path(resource_name), data: { turbo_confirm: "Tem certeza?" }, method: :delete, class: "danger-button" %>
+  <div class="px-10 py-[30px] border-b border-[var(--line)] flex flex-col gap-5">
+    <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)]">Zona de perigo</h2>
+    <%= button_tag "Cancelar minha conta", type: "button", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]", data: { action: "modal#requestDelete" } %>
   </div>
 <% end %>

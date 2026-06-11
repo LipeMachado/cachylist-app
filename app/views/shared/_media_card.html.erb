@@ -1,16 +1,17 @@
-<article class="media-card">
-  <%= link_to media_item_path(item), class: "media-card-link" do %>
-    <img src="<%= cover_for(item) %>" alt="Capa de <%= item.title %>" class="media-cover">
-    <div class="media-card-body">
-      <div class="media-card-title-row">
-        <strong><%= item.title %></strong>
+<article class="border-b border-[var(--line)] bg-[var(--card-bg)] overflow-hidden transition-[background,filter] duration-150 hover:bg-[var(--hover-bg)]" draggable="true" data-kanban-card-id="<%= item.id %>" data-kanban-status="<%= item.status %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
+  <%= link_to media_item_path(item), class: "flex items-start gap-3 p-4 no-underline text-inherit" do %>
+    <img src="<%= cover_for(item) %>" alt="Capa de <%= item.title %>" class="w-12 h-[68px] object-cover flex-[0_0_48px] grayscale-[25%] contrast-110 border border-[var(--line-soft)]">
+    <div class="flex flex-col gap-1 min-w-0 flex-1">
+      <div class="flex items-center gap-2">
+        <strong class="text-[12px] font-bold tracking-[.08em] uppercase truncate"><%= item.title %></strong>
         <span class="status-dot <%= status_class(item.status) %>"></span>
       </div>
-      <p><%= category_label(item.category) %><%= " • #{item.release_year}" if item.release_year.present? %></p>
-      <span><%= item.progress_label.presence || item.platform.presence || "-" %></span>
+      <p class="text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)] m-0 truncate"><%= category_label(item.category) %><%= " • #{item.release_year}" if item.release_year.present? %></p>
+      <span class="text-[10px] text-[var(--tertiary)]"><%= item.progress_label.presence || item.platform.presence || "-" %></span>
       <% if item.progress_percentage.positive? && !item.completed? %>
-        <div class="progress"><span style="width: <%= item.progress_percentage %>%"></span></div>
+        <div class="h-[3px] bg-[var(--line-soft)] overflow-hidden mt-2"><span class="block h-full bg-[var(--accent)] transition-[width]" style="width: <%= item.progress_percentage %>%"></span></div>
       <% end %>
     </div>
+    <span class="flex items-center justify-center text-[var(--muted)] flex-[0_0_24px] self-start mt-1" aria-hidden="true"><%= lucide_icon "grip-vertical", size: 14 %></span>
   <% end %>
 </article>

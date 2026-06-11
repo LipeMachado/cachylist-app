@@ -1,33 +1,49 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="topbar">
-    <div>
-      <h1><%= @selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca" %></h1>
-      <p>Pesquise, filtre e acompanhe tudo em um kanban inspirado no Notion.</p>
+  <div class="grid grid-cols-[1fr_auto] items-center min-h-[150px] overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
+    <div class="px-10 py-9 flex flex-col justify-center">
+      <p class="brutalist-kicker mb-5">Acervo filtrável</p>
+      <h1 class="text-[clamp(42px,5vw,76px)] leading-[.92] m-0 font-black uppercase tracking-[-.08em]"><%= @selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca" %></h1>
+      <p class="mt-5 text-sm leading-6 text-[var(--muted)] tracking-[.01em] max-w-[620px]">Pesquise, filtre e mova seus itens entre status. Tudo em grade dura, bordas expostas e zero decoração desnecessária.</p>
     </div>
-    <%= link_to "#", class: "primary-button", data: { action: "modal#open", category_value: @selected_category } do %><%= lucide_icon "plus", size: 16 %> Nova Mídia<% end %>
+    <div class="flex items-center pr-10">
+      <%= link_to "#", class: "inline-flex gap-3 items-center justify-center w-fit min-h-[48px] px-6 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-bold tracking-[.16em] uppercase whitespace-nowrap font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--accent-strong)]", data: { action: "modal#open", category_value: @selected_category } do %><%= lucide_icon "plus", size: 16 %> Nova mídia<% end %>
+    </div>
   </div>
 
-  <section class="panel">
-    <%= form_with url: request.path, method: :get, class: "filters" do |form| %>
-      <%= form.search_field :query, value: params[:query], placeholder: "Buscar na biblioteca..." %>
+  <section class="bg-transparent p-0">
+    <%= form_with url: request.path, method: :get, class: "grid grid-cols-[minmax(260px,1.4fr)_repeat(3,minmax(180px,.8fr))_auto] border-b border-[var(--line)] bg-[var(--panel-bg)]" do |form| %>
+      <div class="relative border-r border-[var(--line)]" data-controller="search-dropdown" data-search-dropdown-items-value="<%= @search_suggestions.to_json %>" data-action="click@window->search-dropdown#clickOutside">
+        <%= form.search_field :query, value: params[:query], placeholder: "Buscar na biblioteca...", autocomplete: "off", class: "min-h-[58px] border-0 bg-transparent text-[var(--text)] px-5 outline-none text-sm w-full font-inherit placeholder:text-[var(--tertiary)] placeholder:text-[13px] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)]", data: { search_dropdown_target: "input", action: "input->search-dropdown#search focus->search-dropdown#search" } %>
+        <div data-search-dropdown-target="results" hidden class="absolute left-0 right-0 top-full z-50 border border-[var(--line)] border-t-0 bg-[var(--panel-bg)] max-h-[280px] overflow-y-auto"></div>
+      </div>
       <% unless @selected_category.present? %>
-        <%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Todas as categorias", selected: params[:category] } %>
+        <%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Todas as categorias", selected: params[:category] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
       <% end %>
-      <%= form.select :status, MediaItem.statuses.keys.map { |key| [status_label(key), key] }, { include_blank: "Todos os status", selected: params[:status] } %>
-      <%= form.select :platform, @platforms, { include_blank: "Todas as plataformas", selected: params[:platform] } %>
-      <%= form.submit "Filtrar", class: "secondary-button" %>
-      <%= link_to "Limpar", request.path, class: "ghost-link" %>
+      <%= form.select :status, MediaItem.statuses.keys.map { |key| [status_label(key), key] }, { include_blank: "Todos os status", selected: params[:status] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
+      <%= form.select :platform, @platforms, { include_blank: "Todas as plataformas", selected: params[:platform] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
+      <div class="flex justify-end border-l border-[var(--line)]">
+        <% if params.slice(:query, :category, :status, :platform).values.any?(&:present?) %>
+          <%= link_to "Limpar", request.path, class: "brutalist-link inline-flex items-center justify-center min-h-[58px] border-r border-[var(--line)] px-6 whitespace-nowrap cursor-pointer hover:bg-[var(--hover-bg)]" %>
+        <% end %>
+        <%= form.submit "Filtrar", class: "inline-flex items-center justify-center min-h-[58px] px-6 bg-[var(--panel-muted)] text-[var(--text)] text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" %>
+      </div>
     <% end %>
 
     <% if @items.any? %>
-      <div class="kanban-board">
+      <div class="grid grid-cols-5 overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
         <% @items_by_status.each do |status, items| %>
-          <div class="kanban-column">
-            <header><span class="status-dot <%= status_class(status) %>"></span><strong><%= status_label(status) %></strong><small><%= items.size %></small></header>
+          <div class="min-w-[220px] border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
+            <header class="min-h-[60px] px-6 border-b border-[var(--line)] flex items-center gap-2 text-[10px] font-bold tracking-[.16em] uppercase text-[var(--muted)]">
+              <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
+              <strong class="font-bold text-[var(--muted)] truncate"><%= status_label(status) %></strong>
+              <small class="ml-auto text-[var(--tertiary)] text-[11px] tracking-[.04em]"><%= items.size %></small>
+              <span class="ml-2 w-8 h-8 flex-[0_0_32px]">
+                <%= link_to "+", "#", class: "grid place-items-center w-full h-full p-2 border border-[var(--line)] bg-transparent text-[var(--text)] text-lg leading-none font-semibold cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--text)]", title: "Adicionar mídia", aria: { label: "Adicionar mídia" }, data: { action: "modal#open", status_value: status, category_value: @selected_category } %>
+              </span>
+            </header>
             <% items.each do |item| %>
               <%= render "shared/media_card", item: item %>
             <% end %>
-            <%= link_to "#", class: "add-card", data: { action: "modal#open", status_value: status, category_value: @selected_category } do %><%= lucide_icon "plus", size: 14 %> Adicionar mídia<% end %>
           </div>
         <% end %>
       </div>

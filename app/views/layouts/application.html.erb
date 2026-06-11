@@ -26,16 +26,16 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= user_signed_in? ? "app-body antialiased" : "public-body antialiased" %>" data-controller="motion">
+  <body class="<%= user_signed_in? ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
     <% if flash.any? %>
-      <div class="flash-stack">
+      <div class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">
         <% flash.to_a.first(3).each do |type, message| %>
-          <p class="flash <%= type.to_s == "alert" ? "flash-alert" : "flash-notice" %>"><%= message %></p>
+          <p class="flash-message m-0 border border-[var(--line)] p-3.5 bg-[var(--panel-bg)] text-[var(--text)] animate-[toast-out_1.5s_ease_forwards]"><%= message %></p>
         <% end %>
       </div>
       <script>
         setTimeout(() => {
-          document.querySelectorAll(".flash-stack .flash").forEach((flash) => flash.remove());
+          document.querySelectorAll(".flash-message").forEach((flash) => flash.remove());
         }, 1500);
       </script>
     <% end %>

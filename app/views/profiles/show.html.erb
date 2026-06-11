@@ -1,15 +1,15 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="profile-card">
-    <span class="avatar big"><%= current_user.display_name.first %></span>
-    <h1><%= current_user.display_name %></h1>
-    <p><%= current_user.email %></p>
-    <div class="profile-actions">
-      <%= link_to "Editar perfil", edit_user_registration_path, class: "primary-button" %>
-      <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "secondary-button" %>
+  <div class="flex flex-col items-center px-10 py-10 border-b border-[var(--line)]">
+    <span class="w-16 h-16 rounded-full bg-[var(--accent)] text-white text-2xl font-bold flex items-center justify-center flex-[0_0_64px]"><%= current_user.display_name.first %></span>
+    <h1 class="text-xl font-extrabold tracking-[-.03em] mt-4 mb-1"><%= current_user.display_name %></h1>
+    <p class="text-sm text-[var(--muted)] m-0"><%= current_user.email %></p>
+    <div class="flex items-center gap-3 mt-6">
+      <%= link_to "Editar perfil", edit_user_registration_path, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--accent)] bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150" %>
+      <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--surface)]" %>
     </div>
   </div>
 
-  <section class="stats-grid">
+  <section class="flex flex-wrap gap-4 px-10 py-10">
     <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total de Mídias", value: @stats.total, accent: "purple" %>
     <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
     <%= render "shared/stat_card", icon: lucide_icon("play", size: 18), label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>

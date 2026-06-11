@@ -1,6 +1,6 @@
-<div class="empty-state">
+<div class="flex flex-col items-center gap-4 px-10 py-20 text-center">
   <span><%= lucide_icon "plus", size: 20 %></span>
   <h3><%= title %></h3>
   <p><%= text %></p>
-  <%= link_to "Adicionar mídia", "#", class: "primary-button", data: { action: "modal#open" } %>
+  <%= link_to "Adicionar mídia", "#", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110", data: { action: "modal#open" } %>
 </div>

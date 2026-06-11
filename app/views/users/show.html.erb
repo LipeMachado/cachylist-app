@@ -1,0 +1,59 @@
+<%= render layout: "shared/app_shell" do %>
+  <div class="px-0 py-[25px] text-center border-b border-[var(--line)] bg-[var(--panel-bg)]">
+    <% avatar_content = capture do %>
+      <% if (avatar = avatar_image_for(@user)) %>
+        <%= image_tag avatar, alt: "Avatar de #{@user.display_name}", class: "w-full h-full object-cover" %>
+      <% else %>
+        <span><%= @user.display_name.first %></span>
+      <% end %>
+    <% end %>
+    <% if @user == current_user %>
+      <button type="button" class="group relative w-16 h-16 mx-auto mb-4 inline-grid place-items-center text-[22px] font-extrabold tracking-[.02em] uppercase bg-[var(--surface)] text-[var(--accent)] border border-[var(--line)] overflow-hidden cursor-pointer" data-action="modal#openAvatarModal" aria-label="Editar avatar">
+        <%= avatar_content %>
+        <span class="absolute inset-0 hidden place-items-center bg-[var(--overlay-bg)] text-[var(--text)] group-hover:grid"><%= lucide_icon "pencil", size: 20 %></span>
+      </button>
+    <% else %>
+      <span class="w-16 h-16 mx-auto mb-4 inline-grid place-items-center text-[22px] font-extrabold tracking-[.02em] uppercase bg-[var(--surface)] text-[var(--accent)] border border-[var(--line)] overflow-hidden"><%= avatar_content %></span>
+    <% end %>
+    <h1 class="text-[32px] font-extrabold tracking-[-.04em] mb-1.5"><%= @user.display_name %></h1>
+    <p class="text-[13px] text-[var(--muted)] tracking-[.02em]">Membro desde <%= l @user.created_at.to_date, format: :long %></p>
+    <div class="flex gap-3 justify-center mt-6">
+      <% if @user == current_user %>
+        <%= link_to "Editar perfil", edit_user_registration_path, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
+      <% else %>
+        <%= link_to "Biblioteca de #{@user.display_name.first}", library_path, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="grid grid-cols-5 border-b border-[var(--line)]">
+    <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total", value: @stats.total, accent: "purple" %>
+    <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
+    <%= render "shared/stat_card", icon: lucide_icon("play", size: 18), label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>
+    <%= render "shared/stat_card", icon: lucide_icon("pause", size: 18), label: "Pausadas", value: @stats.count(:paused), meta: "#{@stats.percentage(:paused)}%", accent: "orange" %>
+    <%= render "shared/stat_card", icon: lucide_icon("clock", size: 18), label: "Para Depois", value: @stats.count(:planned), meta: "#{@stats.percentage(:planned)}%", accent: "gray" %>
+  </section>
+
+  <% if @recent_items.any? %>
+    <section class="bg-transparent p-0">
+      <div class="min-h-[72px] px-10 border-b border-[var(--line)] flex justify-between items-center">
+        <h2 class="m-0 text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)]">Mídias recentes</h2>
+        <small><%= @stats.total %> itens no total</small>
+      </div>
+      <div class="grid grid-cols-5 overflow-x-auto border-y border-[var(--line)] min-h-[420px]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
+        <% @recent_items.group_by(&:status).each do |status, items| %>
+          <div class="min-w-[220px] border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
+            <header class="min-h-[60px] px-6 border-b border-[var(--line)] flex items-center gap-2 text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)]">
+              <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
+              <strong class="font-medium text-[var(--muted)]"><%= status_label(status) %></strong>
+              <small class="ml-auto text-[var(--tertiary)] text-[11px] tracking-[.04em]"><%= items.size %></small>
+            </header>
+            <% items.each do |item| %>
+              <%= render "shared/media_card", item: item %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+<% end %>

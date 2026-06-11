@@ -4,7 +4,8 @@ export default class extends Controller {
   static targets = ["group"]
 
   connect() {
-    this.showCategory("anime")
+    const select = this.element.querySelector("select")
+    this.showCategory(select ? select.value : "anime")
   }
 
   change(event) {

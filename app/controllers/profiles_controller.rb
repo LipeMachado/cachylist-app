@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
   def show
-    @stats = MediaItemStats.new(current_user.media_items)
+    redirect_to user_path(current_user)
   end
 end

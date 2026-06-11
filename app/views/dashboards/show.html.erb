@@ -1,36 +1,60 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="topbar">
-    <div>
-      <h1>Boa noite, <%= current_user.display_name %>!</h1>
-      <p>Aqui está um resumo da sua jornada.</p>
+  <div data-motion class="grid grid-cols-[1fr_minmax(280px,360px)_auto] items-stretch h-20 overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
+    <div class="px-8 py-3 border-r border-[var(--line)] flex flex-col justify-center">
+      <h1 class="text-[13px] leading-none m-0 font-black tracking-[.32em] uppercase">Cachylist</h1>
+      <p class="mt-2 text-[10px] leading-[1.3] text-[var(--muted)] tracking-[.18em] uppercase">Seu acervo brutalista</p>
     </div>
-    <%= form_with url: library_path, method: :get, class: "search-form" do |form| %>
-      <%= form.search_field :query, placeholder: "Buscar mídias..." %>
+    <%= form_with url: library_path, method: :get, class: "relative grid items-center h-full", data: { controller: "search-dropdown", search_dropdown_items_value: @search_suggestions.to_json, action: "click@window->search-dropdown#clickOutside" } do |form| %>
+      <%= form.search_field :query, placeholder: "Buscar por título, plataforma, categoria...", autocomplete: "off", class: "min-h-0 border-0 py-3 px-8 text-sm bg-transparent text-[var(--text)] w-full outline-none placeholder:text-[var(--tertiary)] placeholder:text-[13px] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)]", data: { search_dropdown_target: "input", action: "input->search-dropdown#search focus->search-dropdown#search" } %>
+      <div data-search-dropdown-target="results" hidden class="absolute left-0 right-0 top-full z-50 border border-[var(--line)] border-t-0 bg-[var(--panel-bg)] max-h-[280px] overflow-y-auto"></div>
     <% end %>
-    <%= link_to "#", class: "primary-button", data: { action: "modal#open" } do %><%= lucide_icon "plus", size: 16 %> Nova Mídia<% end %>
+    <%= link_to "#", class: "inline-flex items-center justify-center min-h-full px-8 bg-transparent border-l border-[var(--line)] text-[var(--text)] text-[11px] font-bold tracking-[.16em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color] duration-150 hover:bg-[var(--hover-bg)]", data: { action: "modal#open" } do %><%= lucide_icon "plus", size: 16 %> Adicionar<% end %>
   </div>
 
-  <section class="stats-grid">
-    <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total de Mídias", value: @stats.total, accent: "purple" %>
-    <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
-    <%= render "shared/stat_card", icon: lucide_icon("play", size: 18), label: "Em Andamento", value: @stats.count(:in_progress), meta: "#{@stats.percentage(:in_progress)}%", accent: "blue" %>
-    <%= render "shared/stat_card", icon: lucide_icon("pause", size: 18), label: "Pausadas", value: @stats.count(:paused), meta: "#{@stats.percentage(:paused)}%", accent: "orange" %>
-    <%= render "shared/stat_card", icon: lucide_icon("clock", size: 18), label: "Para Depois", value: @stats.count(:planned), meta: "#{@stats.percentage(:planned)}%", accent: "gray" %>
+  <section data-motion class="grid grid-cols-[minmax(0,1fr)_340px] border-b border-[var(--line)] min-h-[390px]">
+    <div class="relative px-8 lg:px-10 py-12 border-r border-[var(--line)] overflow-hidden brutalist-noise">
+      <p class="brutalist-kicker mb-7">Resumo geral</p>
+      <h2 class="max-w-[720px] text-[clamp(46px,6vw,82px)] leading-[.92] font-black uppercase tracking-[-.08em] m-0">Sua biblioteca.<br>Seu mundo.</h2>
+      <p class="mt-8 max-w-[520px] text-[15px] leading-7 text-[var(--muted)]">Organize tudo o que você assiste, joga, lê e acompanha. Um painel seco, escuro e direto para seu acervo.</p>
+      <div class="mt-9 pt-7 border-t border-[var(--line)] grid grid-cols-5 gap-6 max-w-[760px]">
+        <div><strong class="block text-2xl font-black"><%= @stats.total %></strong><span class="brutalist-kicker">Total</span></div>
+        <div><strong class="block text-2xl font-black"><%= @stats.count(:completed) %></strong><span class="brutalist-kicker">Finalizadas</span></div>
+        <div><strong class="block text-2xl font-black"><%= @stats.count(:in_progress) %></strong><span class="brutalist-kicker">Ativas</span></div>
+        <div><strong class="block text-2xl font-black"><%= @stats.count(:planned) %></strong><span class="brutalist-kicker">Planejadas</span></div>
+        <div><strong class="block text-2xl font-black"><%= @stats.percentage(:completed) %>%</strong><span class="brutalist-kicker">Conclusão</span></div>
+      </div>
+    </div>
+    <aside class="px-7 py-8 bg-[var(--panel-bg)]">
+      <p class="brutalist-kicker mb-8">Indicadores</p>
+      <div class="grid gap-0 border-y border-[var(--line)]">
+        <div class="py-5 border-b border-[var(--line)]"><strong class="text-4xl font-black"><%= @stats.total %></strong><span class="ml-3 brutalist-kicker">itens na biblioteca</span></div>
+        <div class="py-5 border-b border-[var(--line)]"><strong class="text-4xl font-black"><%= @stats.count(:completed) %></strong><span class="ml-3 brutalist-kicker">concluídas</span></div>
+        <div class="py-5 border-b border-[var(--line)]"><strong class="text-4xl font-black"><%= @stats.count(:paused) %></strong><span class="ml-3 brutalist-kicker">pausadas</span></div>
+        <div class="py-5"><strong class="text-4xl font-black"><%= @stats.percentage(:completed) %>%</strong><span class="ml-3 brutalist-kicker">conclusão média</span></div>
+      </div>
+    </aside>
   </section>
 
-  <section class="panel">
-    <div class="panel-header">
-      <h2>Biblioteca</h2>
-      <%= link_to "Ver tudo", library_path, class: "ghost-link" %>
+  <section data-motion class="bg-transparent p-0">
+    <div class="min-h-[72px] px-10 border-b border-[var(--line)] flex justify-between items-center">
+      <h2 class="m-0 brutalist-kicker">Continue de onde parou</h2>
+      <%= link_to "Ver tudo →", library_path, class: "brutalist-link inline-flex items-center justify-center w-fit min-h-[48px] border-0 px-[22px] whitespace-nowrap cursor-pointer transition-opacity duration-200 hover:opacity-75" %>
     </div>
-    <div class="kanban-board compact">
+    <div class="grid grid-cols-5 overflow-x-auto border-b border-[var(--line)] min-h-[420px]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
       <% @items_by_status.each do |status, items| %>
-        <div class="kanban-column">
-          <header><span class="status-dot <%= status_class(status) %>"></span><strong><%= status_label(status) %></strong><small><%= @stats.count(status) %></small></header>
+        <div class="min-w-[220px] border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
+          <header class="min-h-[60px] px-6 border-b border-[var(--line)] flex items-center gap-2 text-[10px] font-bold tracking-[.16em] uppercase text-[var(--muted)]">
+            <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
+            <strong class="font-bold text-[var(--muted)] truncate"><%= status_label(status) %></strong>
+            <small class="ml-auto text-[var(--tertiary)] text-[11px] tracking-[.04em]"><%= @stats.count(status) %></small>
+            <span class="ml-2 w-8 h-8 flex-[0_0_32px]">
+              <%= link_to "+", "#", class: "grid place-items-center w-full h-full p-2 border border-[var(--line)] bg-transparent text-[var(--text)] text-lg leading-none font-semibold cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--text)]", title: "Adicionar mídia", aria: { label: "Adicionar mídia" }, data: { action: "modal#open", status_value: status } %>
+            </span>
+          </header>
           <% items.each do |item| %>
             <%= render "shared/media_card", item: item %>
           <% end %>
-          <%= link_to "#", class: "add-card", data: { action: "modal#open", status_value: status } do %><%= lucide_icon "plus", size: 14 %> Adicionar mídia<% end %>
+          
         </div>
       <% end %>
     </div>

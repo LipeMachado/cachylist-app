@@ -1,7 +1,7 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="page-heading">
-    <h1>Editar Mídia</h1>
-    <p>Atualize informações, status e progresso de <%= @media_item.title %>.</p>
+  <div class="px-10 py-10 border-b border-[var(--line)]">
+    <h1 class="text-xl font-extrabold tracking-[-.03em] m-0">Editar Mídia</h1>
+    <p class="mt-3 text-sm leading-[1.7] text-[var(--muted)]">Atualize informações, status e progresso de <%= @media_item.title %>.</p>
   </div>
   <%= render "form", media_item: @media_item %>
 <% end %>
