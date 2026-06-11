@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
-if gem list --no-installed --exact --silent foreman; then
-  echo "Installing foreman..."
-  gem install foreman
+if ! command -v bundle >/dev/null 2>&1; then
+  export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
 fi
 
-exec foreman start -f Procfile.dev "$@"
+exec bundle exec foreman start -f Procfile.dev "$@"
