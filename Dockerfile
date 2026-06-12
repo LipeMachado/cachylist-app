@@ -21,7 +21,7 @@ RUN bundle install && \
 
 COPY . .
 
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres ./bin/rails assets:precompile
 
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
