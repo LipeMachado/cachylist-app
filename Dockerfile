@@ -24,8 +24,10 @@ COPY . .
 RUN SECRET_KEY_BASE_DUMMY=1 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres ./bin/rails assets:precompile
 
 RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    mkdir -p tmp/pids tmp/sockets tmp/storage && \
+    chown -R 1000:1000 tmp log storage
 USER 1000:1000
 
 EXPOSE 3000
-CMD ["sh", "-c", "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p ${PORT:-3000}"]
+CMD ["sh", "-c", "bin/rails db:prepare 2>/dev/null || true && bin/rails server -b 0.0.0.0 -p ${PORT:-3000}"]
