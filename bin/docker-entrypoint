@@ -1,9 +1,0 @@
-#!/bin/bash -e
-
-# Run database migrations before starting server
-if [[ " $* " == *" ./bin/rails server "* ]]; then
-  echo "Running database migrations..."
-  ./bin/rails db:prepare 2>&1 || echo "Migration failed, continuing..."
-fi
-
-exec "${@}"
