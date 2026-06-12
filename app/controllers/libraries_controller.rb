@@ -1,7 +1,7 @@
 class LibrariesController < ApplicationController
   def index
     @selected_category = category_from_param
-    @items = current_user.media_items.recent
+    @items = current_user.media_items.board_order
     @items = @items.by_category(@selected_category) if @selected_category.present?
     @items = @items.by_category(params[:category]) if params[:category].present?
     @items = @items.by_status(params[:status]) if params[:status].present?

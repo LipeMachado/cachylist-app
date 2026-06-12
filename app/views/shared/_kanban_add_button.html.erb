@@ -1,0 +1,8 @@
+<% button_data = { action: "modal#open", status_value: status } %>
+<% button_data[:category_value] = local_assigns[:category] if local_assigns[:category].present? %>
+
+<span class="ml-2 w-8 h-8 border border-[var(--line)]">
+    <%= link_to "#", class: "flex items-center justify-center w-full h-full bg-transparent cursor-pointer transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--text)]", title: "Adicionar mídia", aria: { label: "Adicionar mídia" }, data: button_data do %>
+      <%= lucide_icon "plus", size: 16, class: "text-[var(--text)]" %>
+    <% end %>
+</span>

@@ -38,6 +38,22 @@ class MediaItemsController < ApplicationController
     head :ok
   end
 
+  def reorder
+    columns = params.require(:columns).to_unsafe_h
+
+    MediaItem.transaction do
+      columns.each do |status, ids|
+        next unless MediaItem.statuses.key?(status)
+
+        Array(ids).each.with_index do |id, index|
+          current_user.media_items.where(id: id).update_all(status: MediaItem.statuses[status], sort_order: index)
+        end
+      end
+    end
+
+    head :ok
+  end
+
   def destroy
     @media_item.destroy
     redirect_to library_path, notice: "Mídia removida com sucesso."

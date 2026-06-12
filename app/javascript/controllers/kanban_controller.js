@@ -9,6 +9,7 @@ export default class extends Controller {
     this.dragItem = null
     this.sourceColumn = null
     this.sourceNextSibling = null
+    this.dropCommitted = false
     this.recalcCounts()
   }
 
@@ -19,6 +20,7 @@ export default class extends Controller {
     this.dragItem = card
     this.sourceColumn = card.closest("[data-kanban-target='column']")
     this.sourceNextSibling = card.nextElementSibling
+    this.dropCommitted = false
 
     card.classList.add(this.draggingClass || "is-dragging")
     event.dataTransfer.effectAllowed = "move"
@@ -45,6 +47,7 @@ export default class extends Controller {
     this.columnTargets.forEach(col => col.classList.remove(this.dragOverClass || "is-drag-over"))
 
     if (this.dragItem) {
+      if (!this.dropCommitted) this.sourceColumn?.insertBefore(this.dragItem, this.sourceNextSibling)
       this.dragItem.classList.remove(this.draggingClass || "is-dragging")
       this.dragItem = null
     }
@@ -54,7 +57,13 @@ export default class extends Controller {
 
   allowDrop(event) {
     event.preventDefault()
-    event.currentTarget.classList.add(this.dragOverClass || "is-drag-over")
+    const column = event.currentTarget
+    column.classList.add(this.dragOverClass || "is-drag-over")
+
+    if (!this.dragItem) return
+
+    const afterElement = this.dragAfterElement(column, event.clientY)
+    column.insertBefore(this.dragItem, afterElement)
   }
 
   dragEnter(event) {
@@ -74,29 +83,26 @@ export default class extends Controller {
     targetColumn.classList.remove(this.dragOverClass || "is-drag-over")
 
     const card = this.dragItem
-    if (!card || targetColumn === this.sourceColumn) return
+    if (!card) return
 
     const newStatus = targetColumn.dataset.kanbanStatus
     const oldStatus = card.dataset.kanbanStatus
-    const mediaItemId = card.dataset.kanbanCardId
-    const updateUrl = card.dataset.kanbanUpdateUrl
     const sourceColumn = this.sourceColumn
     const sourceNextSibling = this.sourceNextSibling
 
-    const addCard = targetColumn.querySelector(".add-card")
-    targetColumn.insertBefore(card, addCard)
+    this.dropCommitted = true
     card.dataset.kanbanStatus = newStatus
     this.updateCardStatusColor(card, newStatus)
     this.recalcCounts()
 
-    fetch(updateUrl || `/app/media_items/${mediaItemId}/update_status`, {
+    fetch("/app/media_items/reorder", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("[name='csrf-token']")?.content,
         "Accept": "application/json"
       },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ columns: this.orderedColumnsPayload() })
     }).then(r => {
       if (!r.ok) throw new Error()
       const turboFrame = card.closest("turbo-frame")
@@ -107,6 +113,25 @@ export default class extends Controller {
       this.updateCardStatusColor(card, oldStatus)
       this.recalcCounts()
     })
+  }
+
+  dragAfterElement(column, y) {
+    const cards = [...column.querySelectorAll("[data-kanban-card-id]:not(.is-dragging)")]
+
+    return cards.reduce((closest, child) => {
+      const box = child.getBoundingClientRect()
+      const offset = y - box.top - box.height / 2
+
+      if (offset < 0 && offset > closest.offset) return { offset, element: child }
+      return closest
+    }, { offset: Number.NEGATIVE_INFINITY, element: null }).element
+  }
+
+  orderedColumnsPayload() {
+    return this.columnTargets.reduce((payload, column) => {
+      payload[column.dataset.kanbanStatus] = [...column.querySelectorAll("[data-kanban-card-id]")].map((card) => card.dataset.kanbanCardId)
+      return payload
+    }, {})
   }
 
   updateCardStatusColor(card, status) {

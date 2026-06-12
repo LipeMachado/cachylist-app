@@ -27,6 +27,10 @@ Rails.application.routes.draw do
     end
 
     resources :media_items do
+      collection do
+        patch :reorder
+      end
+
       member do
         patch :update_status
       end

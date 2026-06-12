@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_11_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_120000) do
   create_table "media_items", force: :cascade do |t|
     t.string "author"
     t.integer "category", default: 0, null: false
@@ -29,6 +29,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_11_120000) do
     t.boolean "platinum_completed", default: false, null: false
     t.integer "rating"
     t.integer "release_year"
+    t.integer "sort_order", default: 0, null: false
     t.date "started_at"
     t.integer "status", default: 0, null: false
     t.string "title", null: false
@@ -41,6 +42,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_11_120000) do
     t.index ["platform"], name: "index_media_items_on_platform"
     t.index ["status"], name: "index_media_items_on_status"
     t.index ["user_id", "category", "status"], name: "index_media_items_on_user_id_and_category_and_status"
+    t.index ["user_id", "status", "sort_order"], name: "index_media_items_on_user_id_and_status_and_sort_order"
     t.index ["user_id"], name: "index_media_items_on_user_id"
   end
 

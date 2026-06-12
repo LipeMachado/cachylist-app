@@ -3,6 +3,9 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @stats = MediaItemStats.new(@user.media_items)
     @recent_items = @user.media_items.recent.limit(10)
+    @items_by_status = MediaItem.statuses.keys.index_with do |status|
+      @recent_items.select { |item| item.status == status }
+    end
   end
 
   def avatar

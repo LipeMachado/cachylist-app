@@ -1,4 +1,86 @@
 <%= render layout: "shared/app_shell" do %>
+  <section class="dashboard-mobile">
+    <header class="mobile-topbar">
+      <button class="mobile-icon-button" type="button" aria-label="Abrir menu" data-action="mobile-menu#open"><%= lucide_icon "menu", size: 23 %></button>
+      <%= link_to "CACHYLIST", dashboard_path, class: "mobile-brand" %>
+      <%= link_to library_path, class: "mobile-icon-button", aria: { label: "Buscar" } do %><%= lucide_icon "search", size: 22 %><% end %>
+    </header>
+
+    <div class="mobile-profile-row">
+      <button type="button" class="mobile-avatar" data-action="modal#openAvatarModal" aria-label="Editar avatar">
+        <% if (avatar = avatar_image_for(current_user)) %>
+          <%= image_tag avatar, alt: "Avatar de #{current_user.display_name}" %>
+        <% else %>
+          <span><%= current_user.display_name.first %></span>
+        <% end %>
+      </button>
+      <%= link_to user_path(current_user), class: "mobile-profile-link" do %>
+        <strong><%= current_user.display_name %></strong>
+        <span>Ver perfil ↗</span>
+      <% end %>
+    </div>
+
+    <div class="mobile-hero brutalist-noise">
+      <div class="brutalist-noise-content">
+        <p class="brutalist-kicker mb-5">Resumo geral</p>
+        <h1>Sua biblioteca.<br>Seu mundo.</h1>
+        <p>Organize tudo o que você assiste, joga, lê e acompanha. Um painel seco, escuro e direto para seu acervo.</p>
+      </div>
+    </div>
+
+    <div class="mobile-stats-grid">
+      <div><strong data-dashboard-stat="total"><%= @stats.total %></strong><span>Total</span></div>
+      <div><strong data-dashboard-stat="completed"><%= @stats.count(:completed) %></strong><span>Finalizadas</span></div>
+      <div><strong data-dashboard-stat="in_progress"><%= @stats.count(:in_progress) %></strong><span>Ativas</span></div>
+      <div><strong data-dashboard-stat="planned"><%= @stats.count(:planned) %></strong><span>Planejadas</span></div>
+      <div><strong data-dashboard-stat="completed_percentage"><%= @stats.percentage(:completed) %>%</strong><span>Conclusão</span></div>
+    </div>
+
+    <section class="mobile-section">
+      <div class="mobile-section-header">
+        <h2>Continue de onde parou</h2>
+        <%= link_to "Ver tudo →", library_path %>
+      </div>
+      <div class="mobile-progress-list">
+        <% @continue_items.each do |item| %>
+          <% progress = item.progress_percentage %>
+          <%= link_to media_item_path(item), class: "mobile-progress-card" do %>
+            <%= image_tag cover_for(item), alt: "Capa de #{item.title}" %>
+            <div class="mobile-card-copy">
+              <div class="mobile-card-title"><strong><%= item.title %></strong><span class="status-dot <%= status_class(item.status) %>"></span></div>
+              <p><%= category_label(item.category) %> • <%= item.release_year.presence || "----" %></p>
+              <small><%= item.progress_label.presence || item.platform.presence || "-" %></small>
+              <div class="mobile-progress-line"><span style="width: <%= progress %>%"></span></div>
+            </div>
+            <div class="mobile-progress-meta"><span><%= progress %>%</span><span class="mobile-play"><%= lucide_icon "play", size: 13 %></span></div>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="mobile-section">
+      <div class="mobile-section-header">
+        <h2>Últimos adicionados</h2>
+        <%= link_to "Ver tudo →", library_path %>
+      </div>
+      <div class="mobile-latest-list">
+        <% @latest_items.each do |item| %>
+          <%= link_to media_item_path(item), class: "mobile-latest-card" do %>
+            <%= image_tag cover_for(item), alt: "Capa de #{item.title}" %>
+            <div class="mobile-card-copy">
+              <div class="mobile-card-title"><strong><%= item.title %></strong><span class="status-dot <%= status_class(item.status) %>"></span></div>
+              <p><%= category_label(item.category) %> • <%= item.release_year.presence || "----" %></p>
+              <small><%= item.progress_label.presence || item.platform.presence || "-" %></small>
+            </div>
+            <span class="mobile-grip"><%= lucide_icon "grip-vertical", size: 14 %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+
+  </section>
+
+  <div class="dashboard-desktop">
   <div data-motion class="grid grid-cols-[1fr_minmax(280px,360px)_auto] items-stretch h-20 overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
     <div class="px-8 py-3 border-r border-[var(--line)] flex flex-col justify-center">
       <h1 class="text-[13px] leading-none m-0 font-black tracking-[.32em] uppercase">Seu acervo</h1>
@@ -56,9 +138,7 @@
             <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
             <strong class="font-bold text-[var(--muted)] truncate"><%= status_label(status) %></strong>
             <small class="ml-auto text-[var(--tertiary)] text-[11px] tracking-[.04em]"><%= @stats.count(status) %></small>
-            <span class="ml-2 w-8 h-8 flex-[0_0_32px]">
-              <%= link_to "+", "#", class: "grid place-items-center w-full h-full p-2 border border-[var(--line)] bg-transparent text-[var(--text)] text-lg leading-none font-semibold cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--text)]", title: "Adicionar mídia", aria: { label: "Adicionar mídia" }, data: { action: "modal#open", status_value: status } %>
-            </span>
+            <%= render "shared/kanban_add_button", status: status %>
           </header>
           <% items.each do |item| %>
             <%= render "shared/media_card", item: item %>
@@ -68,4 +148,5 @@
       <% end %>
     </div>
   </section>
+  </div>
 <% end %>

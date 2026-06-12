@@ -1,5 +1,6 @@
-<div class="app-frame grid grid-cols-[280px_1fr] overflow-hidden border border-[var(--line)] bg-[var(--bg)]" data-controller="modal" data-action="keydown@window->modal#keydown">
+<div class="app-frame grid grid-cols-[280px_1fr] overflow-hidden border border-[var(--line)] bg-[var(--bg)]" data-controller="modal mobile-menu" data-action="keydown@window->modal#keydown keydown@window->mobile-menu#keydown">
   <%= render "shared/sidebar" %>
+  <button class="mobile-menu-overlay" type="button" aria-label="Fechar menu" data-mobile-menu-target="overlay" data-action="mobile-menu#close" hidden></button>
   <main class="app-main">
     <%= yield %>
   </main>

@@ -1,9 +1,12 @@
 <aside id="app-sidebar" class="sticky top-0 h-full bg-[var(--panel-bg)] border-r border-[var(--line)] grid grid-rows-[auto_auto_1fr_auto]" data-turbo-permanent data-controller="sidebar" data-action="turbo:load@window->sidebar#sync">
-  <%= link_to dashboard_path, class: "min-h-[80px] px-6 py-6 border-b border-[var(--line)] flex items-center gap-3.5 text-[13px] font-black tracking-[.32em] uppercase text-[var(--text)]" do %>
-    <span>CACHYLIST</span>
-  <% end %>
+  <div class="mobile-drawer-header">
+    <%= link_to dashboard_path, class: "text-[13px] font-black uppercase text-[var(--text)]", data: { action: "mobile-menu#close" } do %>
+      <span>CACHYLIST</span>
+    <% end %>
+    <button type="button" aria-label="Fechar menu" data-action="mobile-menu#close"><%= lucide_icon "x", size: 26 %></button>
+  </div>
 
-  <div class="px-6 py-6 border-b border-[var(--line)] grid grid-cols-[54px_1fr] items-center gap-4">
+  <div class="px-6 py-3 border-b border-[var(--line)] grid grid-cols-[54px_1fr] items-center gap-4">
     <button type="button" class="group relative w-[54px] h-[54px] border border-[var(--line)] grid place-items-center font-black text-lg text-[var(--text)] bg-[var(--surface-2)] overflow-hidden cursor-pointer" data-action="modal#openAvatarModal" aria-label="Editar avatar">
       <% if (avatar = avatar_image_for(current_user)) %>
         <%= image_tag avatar, alt: "Avatar de #{current_user.display_name}", class: "w-full h-full object-cover" %>
@@ -12,7 +15,7 @@
       <% end %>
       <span class="absolute inset-0 hidden place-items-center bg-[var(--overlay-bg)] text-[var(--text)] group-hover:grid"><%= lucide_icon "pencil", size: 18 %></span>
     </button>
-    <%= link_to user_path(current_user), class: "min-w-0 transition-opacity duration-150 hover:opacity-80" do %>
+    <%= link_to user_path(current_user), class: "min-w-0 transition-opacity duration-150 hover:opacity-80", data: { action: "mobile-menu#close" } do %>
       <span class="block text-sm font-semibold text-[var(--text)] truncate"><%= current_user.display_name %></span>
       <span class="block mt-1 brutalist-link">Ver perfil ↗</span>
     <% end %>
@@ -21,14 +24,14 @@
   <nav class="block py-4">
     <p class="px-6 mb-3 brutalist-kicker">Navegação</p>
     <% sidebar_nav_items.each do |item| %>
-      <%= link_to item[:path], class: "min-h-[44px] px-6 flex items-center gap-3 text-[var(--muted)] text-[12px] font-semibold tracking-[.14em] uppercase whitespace-nowrap transition-[background,color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] #{current_page?(item[:path]) ? "active text-[var(--text)] bg-[var(--hover-bg)] shadow-[inset_3px_0_0_var(--accent)]" : ""}", data: { sidebar_target: "link", path: item[:path] } do %>
+      <%= link_to item[:path], class: "min-h-[44px] px-6 flex items-center gap-3 text-[var(--muted)] text-[12px] font-semibold tracking-[.14em] uppercase whitespace-nowrap transition-[background,color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] #{current_page?(item[:path]) ? "active text-[var(--text)] bg-[var(--hover-bg)] shadow-[inset_3px_0_0_var(--accent)]" : ""}", data: { sidebar_target: "link", path: item[:path], action: "mobile-menu#close" } do %>
         <span class="w-[18px] h-[18px] text-current inline-grid place-items-center"><%= lucide_icon item[:icon], size: 19 %></span>
         <span><%= item[:label] %></span>
       <% end %>
     <% end %>
   </nav>
 
-  <div class="px-6 py-6 border-t border-[var(--line)]">
+  <div class="px-6 py-6 border-t border-[var(--line)] flex flex-col justify-end">
     <button class="w-full min-h-[42px] border border-[var(--line)] bg-transparent text-[var(--muted)] grid grid-cols-[20px_1fr] items-center gap-2 px-3 text-left text-[11px] font-bold tracking-[.14em] uppercase cursor-pointer transition-[color,background,border-color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] hover:border-[var(--muted)]" type="button" aria-label="Sair" data-action="modal#requestLogout"><%= lucide_icon "log-out", size: 16 %><span>Sair</span></button>
     <p class="mt-5 mb-0 text-[10px] leading-5 text-[var(--muted)] tracking-[.14em] uppercase"><span class="inline-block w-2.5 h-2.5 bg-[var(--accent)] mr-2"></span>Cachylist v1.0</p>
   </div>

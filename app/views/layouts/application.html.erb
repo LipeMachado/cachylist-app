@@ -26,7 +26,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= user_signed_in? ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
+  <body class="<%= request.path.start_with?("/app") ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
     <% if flash.any? %>
       <div class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">
         <% flash.to_a.first(3).each do |type, message| %>

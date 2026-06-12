@@ -5,8 +5,6 @@
   </div>
   <div>
     <strong class="block text-[clamp(28px,3vw,42px)] leading-none font-black m-0"><%= value %></strong>
-    <% if local_assigns[:meta].present? %>
-      <small class="block mt-2 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--tertiary)]"><%= meta %></small>
-    <% end %>
+    <small class="block mt-2 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--tertiary)] <%= "invisible" unless local_assigns[:meta].present? %>" <%= "aria-hidden=true" unless local_assigns[:meta].present? %>><%= local_assigns[:meta].presence || "0%" %></small>
   </div>
 </article>

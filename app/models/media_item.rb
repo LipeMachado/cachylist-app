@@ -1,6 +1,7 @@
 class MediaItem < ApplicationRecord
   belongs_to :user
 
+  before_validation :assign_sort_order, on: :create
   before_validation :clear_non_episodic_progress_fields
 
   enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4 }
@@ -11,6 +12,7 @@ class MediaItem < ApplicationRecord
   validates :release_year, numericality: { only_integer: true, greater_than: 1800, less_than: 2200 }, allow_blank: true
 
   scope :recent, -> { order(updated_at: :desc, created_at: :desc) }
+  scope :board_order, -> { order(:sort_order, updated_at: :desc, created_at: :desc) }
   scope :search, ->(term) { where("LOWER(title) LIKE :term OR LOWER(platform) LIKE :term", term: "%#{sanitize_sql_like(term.downcase)}%") }
   scope :by_category, ->(category) { where(category: category) if categories.key?(category) }
   scope :by_status, ->(status) { where(status: status) if statuses.key?(status) }
@@ -54,5 +56,11 @@ class MediaItem < ApplicationRecord
     self.current_season = nil
     self.current_episode = nil
     self.total_episodes = nil
+  end
+
+  def assign_sort_order
+    return if sort_order.present? || user.blank? || status.blank?
+
+    self.sort_order = user.media_items.where(status: status).maximum(:sort_order).to_i + 1
   end
 end

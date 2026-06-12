@@ -1,5 +1,11 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="grid grid-cols-[1fr_auto] items-center min-h-[150px] overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
+  <header class="mobile-library-topbar">
+    <button class="mobile-icon-button" type="button" aria-label="Abrir menu" data-action="mobile-menu#open"><%= lucide_icon "menu", size: 23 %></button>
+    <%= link_to (@selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca"), library_path, class: "mobile-brand" %>
+    <%= link_to "#library-search", class: "mobile-icon-button", aria: { label: "Buscar" } do %><%= lucide_icon "search", size: 22 %><% end %>
+  </header>
+
+  <div class="library-hero grid grid-cols-[1fr_auto] items-center min-h-[150px] overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
     <div class="px-10 py-9 flex flex-col justify-center">
       <p class="brutalist-kicker mb-5">Acervo filtrável</p>
       <h1 class="text-[clamp(42px,5vw,76px)] leading-[.92] m-0 font-black uppercase tracking-[-.08em]"><%= @selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca" %></h1>
@@ -11,9 +17,9 @@
   </div>
 
   <section class="bg-transparent p-0">
-    <%= form_with url: request.path, method: :get, class: "grid grid-cols-[minmax(260px,1.4fr)_repeat(3,minmax(180px,.8fr))_auto] border-b border-[var(--line)] bg-[var(--panel-bg)]" do |form| %>
+    <%= form_with url: request.path, method: :get, class: "library-filters grid grid-cols-[minmax(260px,1.4fr)_repeat(3,minmax(180px,.8fr))_auto] border-b border-[var(--line)] bg-[var(--panel-bg)]" do |form| %>
       <div class="relative border-r border-[var(--line)]" data-controller="search-dropdown" data-search-dropdown-items-value="<%= @search_suggestions.to_json %>" data-action="click@window->search-dropdown#clickOutside">
-        <%= form.search_field :query, value: params[:query], placeholder: "Buscar na biblioteca...", autocomplete: "off", class: "min-h-[58px] border-0 bg-transparent text-[var(--text)] px-5 outline-none text-sm w-full font-inherit placeholder:text-[var(--tertiary)] placeholder:text-[13px] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)]", data: { search_dropdown_target: "input", action: "input->search-dropdown#search focus->search-dropdown#search" } %>
+        <%= form.search_field :query, id: "library-search", value: params[:query], placeholder: "Buscar na biblioteca...", autocomplete: "off", class: "min-h-[58px] border-0 bg-transparent text-[var(--text)] px-5 outline-none text-sm w-full font-inherit placeholder:text-[var(--tertiary)] placeholder:text-[13px] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)]", data: { search_dropdown_target: "input", action: "input->search-dropdown#search focus->search-dropdown#search" } %>
         <div data-search-dropdown-target="results" hidden class="absolute left-0 right-0 top-full z-50 border border-[var(--line)] border-t-0 bg-[var(--panel-bg)] max-h-[280px] overflow-y-auto"></div>
       </div>
       <% unless @selected_category.present? %>
@@ -30,16 +36,14 @@
     <% end %>
 
     <% if @items.any? %>
-      <div class="grid grid-cols-5 overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
+      <div class="library-board grid grid-cols-5 overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
         <% @items_by_status.each do |status, items| %>
           <div class="min-w-[220px] border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
             <header class="min-h-[60px] px-6 border-b border-[var(--line)] flex items-center gap-2 text-[10px] font-bold tracking-[.16em] uppercase text-[var(--muted)]">
               <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
               <strong class="font-bold text-[var(--muted)] truncate"><%= status_label(status) %></strong>
               <small class="ml-auto text-[var(--tertiary)] text-[11px] tracking-[.04em]"><%= items.size %></small>
-              <span class="ml-2 w-8 h-8 flex-[0_0_32px]">
-                <%= link_to "+", "#", class: "grid place-items-center w-full h-full p-2 border border-[var(--line)] bg-transparent text-[var(--text)] text-lg leading-none font-semibold cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--text)]", title: "Adicionar mídia", aria: { label: "Adicionar mídia" }, data: { action: "modal#open", status_value: status, category_value: @selected_category } %>
-              </span>
+              <%= render "shared/kanban_add_button", status: status, category: @selected_category %>
             </header>
             <% items.each do |item| %>
               <%= render "shared/media_card", item: item %>
