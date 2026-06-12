@@ -1,5 +1,5 @@
 app = "cachylist-app"
-primary_region = "ams"
+primary_region = "gru"
 
 [build]
   dockerfile = "Dockerfile"
