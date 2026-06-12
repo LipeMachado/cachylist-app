@@ -2,7 +2,7 @@
 
 <section class="landing-hero relative h-screen flex flex-col overflow-hidden px-[min(6vw,80px)] py-12">
   <header class="landing-header relative z-10 flex items-center justify-between">
-    <span class="logo-script text-[var(--purple-2)] font-['Bebas_Neue',Inter,sans-serif] text-[clamp(3rem,7vw,5rem)] italic tracking-[-.04em]">CACHYLIST</span>
+    <%= image_tag "logo.png", alt: "CachyList", class: "h-20 w-auto" %>
     <%= link_to (user_signed_in? ? dashboard_path : new_user_session_path), class: "landing-login flex items-center gap-2.5 text-[var(--text)] font-bold text-sm px-6 py-2.5 border border-[var(--line)] bg-transparent transition-colors duration-200 hover:bg-[var(--hover-bg)]" do %>Entrar <%= lucide_icon "arrow-right", size: 14 %><% end %>
   </header>
 

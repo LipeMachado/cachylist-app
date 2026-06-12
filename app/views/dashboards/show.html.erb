@@ -2,7 +2,7 @@
   <section class="dashboard-mobile">
     <header class="mobile-topbar">
       <button class="mobile-icon-button" type="button" aria-label="Abrir menu" data-action="mobile-menu#open"><%= lucide_icon "menu", size: 23 %></button>
-      <%= link_to "CACHYLIST", dashboard_path, class: "mobile-brand" %>
+      <%= link_to dashboard_path, class: "mobile-brand" do %><%= image_tag "logo.png", alt: "CachyList", class: "h-4 w-auto" %><% end %>
       <%= link_to library_path, class: "mobile-icon-button", aria: { label: "Buscar" } do %><%= lucide_icon "search", size: 22 %><% end %>
     </header>
 

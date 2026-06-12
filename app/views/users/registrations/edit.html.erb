@@ -1,17 +1,20 @@
 <%= render layout: "shared/app_shell" do %>
-  <div class="px-10 py-10 border-b border-[var(--line)]">
+  <div class="px-10 py-5 border-b border-[var(--line)]">
     <h1 class="text-xl font-extrabold tracking-[-.03em] m-0">Editar Perfil</h1>
-    <p class="mt-3 text-sm leading-[1.7] text-[var(--muted)]">Atualize e-mail e senha da sua conta CachyList.</p>
+    <p class="mt-3 text-sm leading-[1.7] text-[var(--muted)]">Atualize seu nome de usuário, e-mail e senha da sua conta CachyList.</p>
   </div>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "grid" }) do |f| %>
     <%= render "users/shared/error_messages", resource: resource %>
-    <section class="px-10 py-10 border-b border-[var(--line)]">
+    <section class="px-10 py-5 grid gap-5">
       <div class="grid grid-cols-1 bg-transparent">
-        <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)]" %></label>
+        <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Nome de usuário<%= f.text_field :username, autofocus: true, autocomplete: "username", placeholder: "seu_usuario", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)]" %></label>
+      </div>
+      <div class="grid grid-cols-1 bg-transparent">
+        <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">E-mail<%= f.email_field :email, autocomplete: "email", placeholder: "seu@email.com", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)]" %></label>
       </div>
     </section>
-    <div class="px-10 py-5 border-b border-[var(--line)] flex">
+    <div class="px-10 py-5 flex">
       <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--surface)] gap-2" type="button" data-action="modal#openPasswordModal"><%= lucide_icon "lock", size: 16 %> Alterar senha</button>
     </div>
     <div class="flex justify-end gap-3 px-10 py-6 border-b border-[var(--line)]">
@@ -22,6 +25,6 @@
 
   <div class="px-10 py-[30px] border-b border-[var(--line)] flex flex-col gap-5">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)]">Zona de perigo</h2>
-    <%= button_tag "Cancelar minha conta", type: "button", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]", data: { action: "modal#requestDelete" } %>
+    <%= button_tag "Cancelar minha conta", type: "button", class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border-0 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:brightness-110", data: { action: "modal#requestDelete" } %>
   </div>
 <% end %>

@@ -1,8 +1,8 @@
 <section class="w-screen min-h-screen relative grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-[var(--page-bg)]">
   <div class="auth-art min-h-screen"></div>
   <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto">
-    <span class="text-[var(--purple-2)] font-['Bebas_Neue',Inter,sans-serif] text-[clamp(2.8rem,5vw,3.5rem)] italic tracking-[-.04em] text-center block">CACHYLIST</span>
-    <p class="text-[#c4c0ca] text-[1.15rem] m-0 mb-[42px] text-center">Seu lugar. Suas histórias.</p>
+    <%= link_to "/" do %><%= image_tag "logo.png", alt: "CachyList", class: "h-20 w-auto mx-auto block mb-5" %><% end %>
+    <p class="text-[#c4c0ca] text-[1.15rem] mb-[42px] text-center">Seu lugar. Suas histórias.</p>
 
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "grid gap-5" }) do |f| %>
       <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>

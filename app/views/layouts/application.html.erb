@@ -14,9 +14,8 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <%= favicon_link_tag "logo.png", type: "image/png" %>
+    <%= favicon_link_tag "logo.png", rel: "apple-touch-icon", type: "image/png" %>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +25,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= request.path.start_with?("/app") ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
+  <body class="<%= request.path.start_with?("/app") || request.path == "/edit" ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
     <% if flash.any? %>
       <div class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">
         <% flash.to_a.first(3).each do |type, message| %>

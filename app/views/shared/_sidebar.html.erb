@@ -1,8 +1,8 @@
 <aside id="app-sidebar" class="sticky top-0 h-full bg-[var(--panel-bg)] border-r border-[var(--line)] grid grid-rows-[auto_auto_1fr_auto]" data-turbo-permanent data-controller="sidebar" data-action="turbo:load@window->sidebar#sync">
   <div class="mobile-drawer-header">
-    <%= link_to dashboard_path, class: "text-[13px] font-black uppercase text-[var(--text)]", data: { action: "mobile-menu#close" } do %>
-      <span>CACHYLIST</span>
-    <% end %>
+<%= link_to dashboard_path, class: "block w-fit", data: { action: "mobile-menu#close" } do %>
+  <%= image_tag "logo.png", alt: "CachyList", class: "h-5 w-auto" %>
+<% end %>
     <button type="button" aria-label="Fechar menu" data-action="mobile-menu#close"><%= lucide_icon "x", size: 26 %></button>
   </div>
 

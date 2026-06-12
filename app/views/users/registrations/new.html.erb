@@ -1,12 +1,13 @@
 <section class="w-screen min-h-screen relative grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-[var(--page-bg)]">
   <div class="auth-art min-h-screen"></div>
   <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto">
-    <span class="text-[var(--purple-2)] font-['Bebas_Neue',Inter,sans-serif] text-[clamp(2.8rem,5vw,3.5rem)] italic tracking-[-.04em] text-center block">CACHYLIST</span>
+    <%= link_to "/" do %><%= image_tag "logo.png", alt: "CachyList", class: "h-20 w-auto mx-auto block mb-5" %><% end %>
     <p class="text-[#c4c0ca] text-[1.15rem] m-0 mb-[42px] text-center">Crie sua conta e organize tudo em um só lugar.</p>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "grid gap-5" }) do |f| %>
       <%= render "users/shared/error_messages", resource: resource %>
-      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">Nome de usuário<%= f.text_field :username, autofocus: true, autocomplete: "username", placeholder: "seu_usuario", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
       <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Senha
         <span class="relative block" data-controller="password-visibility">
           <%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none", data: { password_visibility_target: "input" } %>
