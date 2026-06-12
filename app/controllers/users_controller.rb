@@ -4,7 +4,7 @@ class UsersController < ApplicationController
     @stats = MediaItemStats.new(@user.media_items)
     @recent_items = @user.media_items.recent.limit(10)
     @items_by_status = MediaItem.statuses.keys.index_with do |status|
-      @recent_items.select { |item| item.status == status }
+      @user.media_items.where(status: status).board_order
     end
   end
 
