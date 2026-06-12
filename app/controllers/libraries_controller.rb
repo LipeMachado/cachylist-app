@@ -9,7 +9,7 @@ class LibrariesController < ApplicationController
 
     @stats = MediaItemStats.new(current_user.media_items)
     @platforms = current_user.media_items.where.not(platform: [ nil, "" ]).distinct.order(:platform).pluck(:platform)
-    @search_suggestions = current_user.media_items.flat_map { |item| [ item.title, item.platform, item.director, item.author ] }.compact_blank.uniq.sort
+    @search_suggestions = current_user.media_items.flat_map { |item| [ item.title, item.platform, item.author ] }.compact_blank.uniq.sort
     @items = @items.to_a
     @items = @items.select { |item| searchable_text(item).include?(normalize_query(params[:query])) } if params[:query].present?
     @items_by_status = MediaItem.statuses.keys.index_with do |status|
@@ -34,6 +34,6 @@ class LibrariesController < ApplicationController
   end
 
   def searchable_text(item)
-    normalize_query([ item.title, item.platform, item.director, item.author, item.release_year ].compact.join(" "))
+    normalize_query([ item.title, item.platform, item.author, item.release_year ].compact.join(" "))
   end
 end

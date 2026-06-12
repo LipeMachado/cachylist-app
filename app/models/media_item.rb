@@ -1,6 +1,8 @@
 class MediaItem < ApplicationRecord
   belongs_to :user
 
+  before_validation :clear_non_episodic_progress_fields
+
   enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4 }
   enum :status, { planned: 0, in_progress: 1, completed: 2, paused: 3, no_date: 4 }
 
@@ -42,5 +44,15 @@ class MediaItem < ApplicationRecord
     else
       completed? ? 100 : 0
     end
+  end
+
+  private
+
+  def clear_non_episodic_progress_fields
+    return if anime? || series?
+
+    self.current_season = nil
+    self.current_episode = nil
+    self.total_episodes = nil
   end
 end

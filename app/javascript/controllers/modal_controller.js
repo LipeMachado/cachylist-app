@@ -5,13 +5,24 @@ export default class extends Controller {
   static targets = [
     "modal", "dialog", "confirm", "confirmBackdrop",
     "confirmDelete", "confirmDeleteBackdrop",
-    "confirmLogout", "confirmLogoutBackdrop",
+    "confirmLogout",
     "form", "category", "status", "title",
     "passwordBackdrop", "passwordModal", "avatarBackdrop", "avatarModal"
   ]
 
   connect() {
     this.dirty = false
+  }
+
+  keydown(event) {
+    if (event.key !== "Escape") return
+
+    if (this.hasConfirmTarget && !this.confirmTarget.hidden) return this.keepEditing(event)
+    if (this.hasConfirmDeleteTarget && !this.confirmDeleteTarget.hidden) return this.cancelDelete(event)
+    if (this.hasConfirmLogoutTarget && !this.confirmLogoutTarget.hidden) return this.cancelLogout(event)
+    if (this.hasPasswordModalTarget && !this.passwordModalTarget.hidden) return this.closePasswordModal(event)
+    if (this.hasAvatarModalTarget && !this.avatarModalTarget.hidden) return this.closeAvatarModal(event)
+    if (this.hasModalTarget && !this.modalTarget.hidden) this.requestClose(event)
   }
 
   /* ── Media modal ─────────────────────────────────────── */
@@ -126,10 +137,9 @@ export default class extends Controller {
   requestLogout(event) {
     event.preventDefault()
     event.stopPropagation()
-    this.confirmLogoutBackdropTarget.hidden = false
     this.confirmLogoutTarget.hidden = false
-    gsap.fromTo(this.confirmLogoutBackdropTarget, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" })
-    gsap.fromTo(this.confirmLogoutTarget, { opacity: 0, y: 12, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power2.out" })
+    gsap.fromTo(this.confirmLogoutTarget, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" })
+    gsap.fromTo(this.confirmLogoutTarget.querySelector("section"), { opacity: 0, y: 12, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power2.out" })
   }
 
   confirmLogout(event) {
@@ -141,7 +151,6 @@ export default class extends Controller {
   cancelLogout(event) {
     event.preventDefault()
     this.confirmLogoutTarget.hidden = true
-    this.confirmLogoutBackdropTarget.hidden = true
   }
 
   /* ── Password change modal ─────────────────────────────── */

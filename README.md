@@ -5,7 +5,7 @@
 A personal media tracking app where you can organize, track, and manage all your media consumption — anime, series, movies, books, and games — in a single unified kanban-style interface.
 
 ![Rails](https://img.shields.io/badge/Rails-8.1.3-red?logo=ruby-on-rails)
-![Ruby](https://img.shields.io/badge/Ruby-4.0.5-red?logo=ruby)
+![Ruby](https://img.shields.io/badge/Ruby-3.4.5-red?logo=ruby)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Features
@@ -23,7 +23,7 @@ A personal media tracking app where you can organize, track, and manage all your
 
 ## Built with
 
-- **Ruby 4.0.5** + **Rails 8.1.3**
+- **Ruby 3.4.5** + **Rails 8.1.3**
 - **SQLite3** (with Solid Cache, Solid Queue, Solid Cable)
 - **Hotwire** (Turbo + Stimulus)
 - **Tailwind CSS 4** via `tailwindcss-rails`
@@ -38,7 +38,7 @@ A personal media tracking app where you can organize, track, and manage all your
 
 ### Prerequisites
 
-- Ruby 4.0.5
+- Ruby 3.4.5
 - SQLite3
 - Bundler
 

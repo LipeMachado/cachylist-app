@@ -1,11 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["group"]
+  static targets = ["group", "select"]
 
   connect() {
-    const select = this.element.querySelector("select")
-    this.showCategory(select ? select.value : "anime")
+    this.showCategory(this.hasSelectTarget ? this.selectTarget.value : "")
   }
 
   change(event) {
@@ -17,6 +16,9 @@ export default class extends Controller {
       const categories = group.dataset.category || ""
       const show = categories.split(" ").includes(category)
       group.classList.toggle("hidden", !show)
+      group.querySelectorAll("input, select, textarea").forEach((field) => {
+        field.disabled = !show
+      })
     })
   }
 }

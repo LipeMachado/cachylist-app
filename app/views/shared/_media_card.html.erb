@@ -1,4 +1,4 @@
-<article class="border-b border-[var(--line)] bg-[var(--card-bg)] overflow-hidden transition-[background,filter] duration-150 hover:bg-[var(--hover-bg)]" draggable="true" data-kanban-card-id="<%= item.id %>" data-kanban-status="<%= item.status %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
+<article class="border-b border-[var(--line)] bg-[var(--card-bg)] overflow-hidden transition-[background,filter] duration-150 hover:bg-[var(--hover-bg)]" draggable="true" data-kanban-card-id="<%= item.id %>" data-kanban-status="<%= item.status %>" data-kanban-update-url="<%= update_status_media_item_path(item) %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
   <%= link_to media_item_path(item), class: "flex items-start gap-3 p-4 no-underline text-inherit" do %>
     <img src="<%= cover_for(item) %>" alt="Capa de <%= item.title %>" class="w-12 h-[68px] object-cover flex-[0_0_48px] grayscale-[25%] contrast-110 border border-[var(--line-soft)]">
     <div class="flex flex-col gap-1 min-w-0 flex-1">

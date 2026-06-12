@@ -1,4 +1,4 @@
-<div class="app-frame grid grid-cols-[280px_1fr] overflow-hidden border border-[var(--line)] bg-[var(--bg)]" data-controller="modal">
+<div class="app-frame grid grid-cols-[280px_1fr] overflow-hidden border border-[var(--line)] bg-[var(--bg)]" data-controller="modal" data-action="keydown@window->modal#keydown">
   <%= render "shared/sidebar" %>
   <main class="app-main">
     <%= yield %>
@@ -17,7 +17,7 @@
       <%= render "media_items/form", media_item: current_user.media_items.new(status: :planned, category: :anime), modal: true %>
     </section>
 
-    <div data-modal-target="confirmBackdrop" hidden></div>
+    <div data-modal-target="confirmBackdrop" data-action="click->modal#keepEditing" hidden></div>
     <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
       <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair sem criar?</h3>
       <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você alterou campos do formulário. Se sair agora, as informações serão perdidas.</p>
@@ -28,7 +28,7 @@
     </section>
   </div>
 
-  <div data-modal-target="confirmDeleteBackdrop" hidden></div>
+  <div data-modal-target="confirmDeleteBackdrop" data-action="click->modal#cancelDelete" hidden></div>
   <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmDelete" role="alertdialog" aria-modal="true" hidden>
     <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Cancelar conta?</h3>
     <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Esta ação é irreversível. Todos os seus dados serão permanentemente removidos.</p>
@@ -38,17 +38,19 @@
     </div>
   </section>
 
-  <div data-modal-target="confirmLogoutBackdrop" hidden></div>
-  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmLogout" role="alertdialog" aria-modal="true" hidden>
-    <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair da conta?</h3>
-    <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você será desconectado da sua conta CachyList.</p>
-    <div class="flex gap-3 justify-end flex-wrap">
-      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#cancelLogout">Voltar</button>
-      <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" type="button" data-action="modal#confirmLogout">Sim, sair</button>
-    </div>
-  </section>
+  <div class="fixed inset-0 z-[90] grid place-items-center p-6" data-modal-target="confirmLogout" role="alertdialog" aria-modal="true" hidden>
+    <button class="absolute inset-0 bg-[var(--overlay-bg)] cursor-pointer border-0" type="button" aria-label="Fechar modal" data-action="modal#cancelLogout"></button>
+    <section class="relative z-10 w-[min(480px,calc(100vw-48px))] bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]">
+      <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair da conta?</h3>
+      <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você será desconectado da sua conta CachyList.</p>
+      <div class="flex gap-3 justify-end flex-wrap">
+        <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" type="button" data-action="modal#cancelLogout">Voltar</button>
+        <button class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" type="button" data-action="modal#confirmLogout">Sim, sair</button>
+      </div>
+    </section>
+  </div>
 
-  <div data-modal-target="passwordBackdrop" hidden></div>
+  <div data-modal-target="passwordBackdrop" data-action="click->modal#closePasswordModal" hidden></div>
   <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="passwordModal" role="dialog" aria-modal="true" hidden>
     <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Alterar senha</h3>
     <%= form_for current_user, as: :user, url: registration_path(:user), html: { method: :put, class: "grid gap-4" } do |f| %>
@@ -86,7 +88,7 @@
     <% end %>
   </section>
 
-  <div data-modal-target="avatarBackdrop" hidden></div>
+  <div data-modal-target="avatarBackdrop" data-action="click->modal#closeAvatarModal" hidden></div>
   <section class="fixed z-[90] left-1/2 top-1/2 w-[min(720px,calc(100vw-48px))] max-h-[calc(100dvh-80px)] overflow-auto -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="avatarModal" role="dialog" aria-modal="true" hidden>
     <div class="flex items-start justify-between gap-6 mb-6">
       <div>

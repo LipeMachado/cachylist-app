@@ -3,11 +3,13 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["column"]
   static classes = ["dragging", "dragOver"]
+  static statusClasses = ["status-planned", "status-in-progress", "status-completed", "status-paused", "status-no-date"]
 
   connect() {
     this.dragItem = null
     this.sourceColumn = null
     this.sourceNextSibling = null
+    this.recalcCounts()
   }
 
   dragStart(event) {
@@ -75,13 +77,19 @@ export default class extends Controller {
     if (!card || targetColumn === this.sourceColumn) return
 
     const newStatus = targetColumn.dataset.kanbanStatus
+    const oldStatus = card.dataset.kanbanStatus
     const mediaItemId = card.dataset.kanbanCardId
+    const updateUrl = card.dataset.kanbanUpdateUrl
+    const sourceColumn = this.sourceColumn
+    const sourceNextSibling = this.sourceNextSibling
 
     const addCard = targetColumn.querySelector(".add-card")
     targetColumn.insertBefore(card, addCard)
+    card.dataset.kanbanStatus = newStatus
+    this.updateCardStatusColor(card, newStatus)
     this.recalcCounts()
 
-    fetch(`/media_items/${mediaItemId}/update_status`, {
+    fetch(updateUrl || `/app/media_items/${mediaItemId}/update_status`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -91,20 +99,58 @@ export default class extends Controller {
       body: JSON.stringify({ status: newStatus })
     }).then(r => {
       if (!r.ok) throw new Error()
-      card.dataset.kanbanStatus = newStatus
       const turboFrame = card.closest("turbo-frame")
       if (turboFrame) turboFrame.reload()
     }).catch(() => {
-      this.sourceColumn?.insertBefore(card, this.sourceNextSibling)
+      sourceColumn?.insertBefore(card, sourceNextSibling)
+      card.dataset.kanbanStatus = oldStatus
+      this.updateCardStatusColor(card, oldStatus)
       this.recalcCounts()
     })
   }
 
+  updateCardStatusColor(card, status) {
+    const dot = card.querySelector(".status-dot")
+    if (!dot) return
+
+    dot.classList.remove(...this.constructor.statusClasses)
+    dot.classList.add(`status-${status.replaceAll("_", "-")}`)
+  }
+
   recalcCounts() {
+    const counts = this.statusCounts()
+
     this.columnTargets.forEach(col => {
-      const count = col.querySelectorAll("[data-kanban-card-id]").length
       const badge = col.querySelector("header small")
-      if (badge) badge.textContent = count
+      if (badge) badge.textContent = counts[col.dataset.kanbanStatus] || 0
+    })
+
+    this.updateDashboardStats(counts)
+  }
+
+  statusCounts() {
+    return this.columnTargets.reduce((counts, col) => {
+      counts[col.dataset.kanbanStatus] = col.querySelectorAll("[data-kanban-card-id]").length
+      return counts
+    }, {})
+  }
+
+  updateDashboardStats(counts) {
+    const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
+    const values = {
+      total,
+      planned: counts.planned || 0,
+      in_progress: counts.in_progress || 0,
+      completed: counts.completed || 0,
+      paused: counts.paused || 0,
+      no_date: counts.no_date || 0,
+      completed_percentage: total === 0 ? "0%" : `${Math.round(((counts.completed || 0) / total) * 100)}%`
+    }
+
+    Object.entries(values).forEach(([key, value]) => {
+      document.querySelectorAll(`[data-dashboard-stat='${key}']`).forEach((element) => {
+        element.textContent = value
+      })
     })
   }
 }
