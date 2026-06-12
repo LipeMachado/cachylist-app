@@ -176,6 +176,8 @@ export default class extends Controller {
     event.preventDefault()
     this.avatarBackdropTarget.hidden = false
     this.avatarModalTarget.hidden = false
+    this.avatarModalTarget.querySelector("[data-controller='avatar-grid']")
+      ?.dispatchEvent(new CustomEvent("reveal"))
     gsap.fromTo(this.avatarBackdropTarget, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" })
     gsap.fromTo(this.avatarModalTarget, { opacity: 0, y: 12, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power2.out" })
   }

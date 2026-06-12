@@ -1255,3 +1255,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding-right: 16px;
   }
 }
+
+.avatar-option {
+  opacity: 0;
+  filter: blur(10px);
+  transform: scale(1.08);
+  transition: opacity 0.35s ease-out, filter 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.avatar-option.loaded {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}

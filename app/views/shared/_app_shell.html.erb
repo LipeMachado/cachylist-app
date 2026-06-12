@@ -100,12 +100,15 @@
     </div>
 
     <%= form_with url: avatar_user_path(current_user), method: :patch, class: "grid gap-6" do |form| %>
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-3">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-3" data-controller="avatar-grid">
         <% avatar_options.each do |avatar| %>
           <label class="block cursor-pointer">
             <%= radio_button_tag :avatar, avatar, current_user.avatar == avatar, class: "peer sr-only" %>
-            <span class="block aspect-square border border-[var(--line)] p-1 bg-[var(--bg)] transition-[border-color,background] duration-150 peer-checked:border-[var(--accent-strong)] peer-checked:bg-[var(--hover-bg)] hover:bg-[var(--hover-bg)]">
-              <%= image_tag avatar, alt: "Avatar", class: "w-full h-full object-cover grayscale-[15%]" %>
+            <span class="block aspect-square border border-[var(--line)] p-1 bg-[var(--bg)] transition-[border-color,background] duration-150 peer-checked:border-[var(--accent-strong)] peer-checked:bg-[var(--hover-bg)] hover:bg-[var(--hover-bg)] overflow-hidden">
+              <img data-avatar-grid-target="img"
+                   data-src="<%= asset_path(avatar) %>"
+                   alt="Avatar"
+                   class="avatar-option w-full h-full object-cover grayscale-[15%]">
             </span>
           </label>
         <% end %>
