@@ -15,8 +15,8 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 WORKDIR /rails
 
 # Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+RUN apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 update -qq && \
+    apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 install --no-install-recommends --fix-missing -y curl libjemalloc2 libpq5 libvips && \
     ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -31,8 +31,8 @@ ENV RAILS_ENV="production" \
 FROM base AS build
 
 # Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config && \
+RUN apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 update -qq && \
+    apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 install --no-install-recommends --fix-missing -y build-essential git libpq-dev libvips libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
@@ -52,7 +52,7 @@ COPY . .
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres ./bin/rails assets:precompile
 
 
 

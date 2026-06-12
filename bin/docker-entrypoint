@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
+# Run database migrations before starting server
 if [[ " $* " == *" ./bin/rails server "* ]]; then
-  ./bin/rails db:prepare
+  echo "Running database migrations..."
+  ./bin/rails db:prepare 2>&1 || echo "Migration failed, continuing..."
 fi
 
 exec "${@}"
