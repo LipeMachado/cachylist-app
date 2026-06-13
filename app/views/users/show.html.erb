@@ -1,4 +1,10 @@
 <%= render layout: "shared/app_shell" do %>
+  <header class="mobile-library-topbar">
+    <button class="mobile-icon-button" type="button" aria-label="Abrir menu" data-action="mobile-menu#open"><%= lucide_icon "menu", size: 23 %></button>
+    <%= link_to "Perfil", user_path(@user), class: "mobile-brand" %>
+    <%= link_to dashboard_path, class: "mobile-icon-button", aria: { label: "Voltar ao dashboard" } do %><%= lucide_icon "layout-dashboard", size: 21 %><% end %>
+  </header>
+
   <div class="px-4 py-10 md:py-[25px] text-center border-b border-[var(--line)] bg-[var(--panel-bg)]">
     <% avatar_content = capture do %>
       <% if (avatar = avatar_image_for(@user)) %>
