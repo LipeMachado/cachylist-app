@@ -1,6 +1,6 @@
-<article class="grid gap-4 px-6 py-6 border-r border-[var(--line)] bg-[var(--panel-bg)] <%= local_assigns[:accent] %>">
+<article class="grid gap-4 min-w-0 px-4 md:px-6 py-6 border-r border-[var(--line)] bg-[var(--panel-bg)] <%= local_assigns[:accent] %>">
   <div class="flex items-center justify-between gap-3">
-    <p class="text-[10px] font-bold tracking-[.16em] uppercase leading-[1.5] text-[var(--muted)] m-0"><%= label %></p>
+    <p class="min-w-0 text-[10px] font-bold tracking-[.16em] uppercase leading-[1.5] text-[var(--muted)] m-0 break-words"><%= label %></p>
     <span class="flex items-center justify-center w-[28px] h-[28px] border border-[var(--line)] flex-[0_0_28px] text-[var(--accent)]"><%= icon %></span>
   </div>
   <div>
