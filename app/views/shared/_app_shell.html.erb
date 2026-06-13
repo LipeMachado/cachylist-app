@@ -5,10 +5,10 @@
     <%= yield %>
   </main>
 
-  <div class="fixed inset-0 z-[80] grid place-items-start justify-center px-4 py-4 md:px-8 md:py-8" data-modal-target="modal" hidden>
+  <div class="fixed inset-0 z-[80] grid place-items-start justify-center px-2 py-4 md:px-8 md:py-8" data-modal-target="modal" hidden>
     <button class="absolute inset-0 bg-[var(--overlay-bg)] cursor-pointer border-0" type="button" aria-label="Fechar modal" data-action="modal#requestClose"></button>
-    <section class="relative z-10 w-[min(1100px,calc(100vw-64px))] max-h-[calc(100vh-64px)] overflow-auto bg-[var(--bg)] border border-[var(--line)] shadow-[0_30px_90px_rgba(0,0,0,.65)]" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
-      <header class="min-h-[72px] px-4 md:px-8 py-5 border-b border-[var(--line)] flex justify-between items-center gap-[18px] bg-[var(--surface)]">
+    <section class="relative z-10 w-[min(1100px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] overflow-auto bg-[var(--bg)] border border-[var(--line)] shadow-[0_30px_90px_rgba(0,0,0,.65)]" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
+      <header class="min-h-[72px] px-3 md:px-8 py-5 border-b border-[var(--line)] flex justify-between items-center gap-[18px] bg-[var(--surface)]">
         <div>
           <p class="text-[10px] font-semibold tracking-[.18em] uppercase text-[var(--accent-strong)] m-0 mb-0.5">Nova entrada</p>
           <h2 id="media-modal-title" class="text-2xl font-black uppercase tracking-[-.06em] m-0" data-modal-target="title">Adicionar mídia</h2>

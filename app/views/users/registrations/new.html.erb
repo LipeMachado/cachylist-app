@@ -1,16 +1,16 @@
 <section class="w-screen min-h-screen relative grid grid-cols-1 overflow-hidden bg-[var(--page-bg)]">
   <div class="auth-art min-h-screen hidden"></div>
-  <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto px-3 md:px-5">
+  <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto px-2 md:px-5">
     <%= link_to "/" do %><%= image_tag "logo.png", alt: "CachyList", class: "h-20 w-auto mx-auto block mb-5" %><% end %>
     <p class="text-[#c4c0ca] text-[1.15rem] m-0 mb-[42px] text-center">Crie sua conta e organize tudo em um só lugar.</p>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "grid gap-5" }) do |f| %>
       <%= render "users/shared/error_messages", resource: resource %>
-      <label class="text-[var(--text)] grid gap-2.5 font-semibold">Nome de usuário<%= f.text_field :username, autofocus: true, autocomplete: "username", placeholder: "seu_usuario", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
-      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none" %></label>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">Nome de usuário<%= f.text_field :username, autofocus: true, autocomplete: "username", placeholder: "seu_usuario", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-3 py-[15px] outline-none" %></label>
+      <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-3 py-[15px] outline-none" %></label>
       <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Senha
         <span class="relative block" data-controller="password-visibility">
-          <%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none", data: { password_visibility_target: "input" } %>
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "mínimo #{@minimum_password_length} caracteres", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-3 py-[15px] outline-none", data: { password_visibility_target: "input" } %>
           <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-white" tabindex="-1" aria-label="Mostrar senha">
             <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
             <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
@@ -19,7 +19,7 @@
       </label>
       <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Confirmar senha
         <span class="relative block" data-controller="password-visibility">
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita sua senha", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-[17px] py-[15px] outline-none", data: { password_visibility_target: "input" } %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "repita sua senha", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-3 py-[15px] outline-none", data: { password_visibility_target: "input" } %>
           <button type="button" data-action="password-visibility#toggle" class="absolute right-px top-px bottom-px w-9 border-0 bg-transparent text-[var(--muted)] grid place-items-center cursor-pointer p-0 font-inherit transition-colors duration-150 hover:text-white" tabindex="-1" aria-label="Mostrar senha">
             <span data-icon="on"><%= lucide_icon "eye", size: 16 %></span>
             <span data-icon="off" hidden><%= lucide_icon "eye-off", size: 16 %></span>
