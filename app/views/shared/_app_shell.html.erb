@@ -5,10 +5,10 @@
     <%= yield %>
   </main>
 
-  <div class="fixed inset-0 z-[80] grid place-items-start justify-center px-8 py-8" data-modal-target="modal" hidden>
+  <div class="fixed inset-0 z-[80] grid place-items-start justify-center px-4 py-4 md:px-8 md:py-8" data-modal-target="modal" hidden>
     <button class="absolute inset-0 bg-[var(--overlay-bg)] cursor-pointer border-0" type="button" aria-label="Fechar modal" data-action="modal#requestClose"></button>
     <section class="relative z-10 w-[min(1100px,calc(100vw-64px))] max-h-[calc(100vh-64px)] overflow-auto bg-[var(--bg)] border border-[var(--line)] shadow-[0_30px_90px_rgba(0,0,0,.65)]" data-modal-target="dialog" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
-      <header class="min-h-[72px] px-8 py-5 border-b border-[var(--line)] flex justify-between items-center gap-[18px] bg-[var(--surface)]">
+      <header class="min-h-[72px] px-4 md:px-8 py-5 border-b border-[var(--line)] flex justify-between items-center gap-[18px] bg-[var(--surface)]">
         <div>
           <p class="text-[10px] font-semibold tracking-[.18em] uppercase text-[var(--accent-strong)] m-0 mb-0.5">Nova entrada</p>
           <h2 id="media-modal-title" class="text-2xl font-black uppercase tracking-[-.06em] m-0" data-modal-target="title">Adicionar mídia</h2>
@@ -19,7 +19,7 @@
     </section>
 
     <div data-modal-target="confirmBackdrop" data-action="click->modal#keepEditing" hidden></div>
-    <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
+    <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-4 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirm" role="alertdialog" aria-modal="true" hidden>
       <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair sem criar?</h3>
       <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você alterou campos do formulário. Se sair agora, as informações serão perdidas.</p>
       <div class="flex gap-3 justify-end flex-wrap">
@@ -30,7 +30,7 @@
   </div>
 
   <div data-modal-target="confirmDeleteBackdrop" data-action="click->modal#cancelDelete" hidden></div>
-  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmDelete" role="alertdialog" aria-modal="true" hidden>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-4 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="confirmDelete" role="alertdialog" aria-modal="true" hidden>
     <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Cancelar conta?</h3>
     <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Esta ação é irreversível. Todos os seus dados serão permanentemente removidos.</p>
     <div class="flex gap-3 justify-end flex-wrap">
@@ -41,7 +41,7 @@
 
   <div class="fixed inset-0 z-[90] grid place-items-center p-6" data-modal-target="confirmLogout" role="alertdialog" aria-modal="true" hidden>
     <button class="absolute inset-0 bg-[var(--overlay-bg)] cursor-pointer border-0" type="button" aria-label="Fechar modal" data-action="modal#cancelLogout"></button>
-    <section class="relative z-10 w-[min(480px,calc(100vw-48px))] bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]">
+    <section class="relative z-10 w-[min(480px,calc(100vw-48px))] bg-[var(--surface)] border border-[var(--line)] p-4 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]">
       <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Sair da conta?</h3>
       <p class="text-[13px] leading-[1.6] text-[var(--muted)] m-0 mb-6 tracking-[.01em]">Você será desconectado da sua conta CachyList.</p>
       <div class="flex gap-3 justify-end flex-wrap">
@@ -52,7 +52,7 @@
   </div>
 
   <div data-modal-target="passwordBackdrop" data-action="click->modal#closePasswordModal" hidden></div>
-  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="passwordModal" role="dialog" aria-modal="true" hidden>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(480px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-4 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="passwordModal" role="dialog" aria-modal="true" hidden>
     <h3 class="text-xl font-extrabold tracking-[-.03em] m-0 mb-2.5">Alterar senha</h3>
     <%= form_for current_user, as: :user, url: registration_path(:user), html: { method: :put, class: "grid gap-4" } do |f| %>
       <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Senha atual
@@ -90,7 +90,7 @@
   </section>
 
   <div data-modal-target="avatarBackdrop" data-action="click->modal#closeAvatarModal" hidden></div>
-  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(720px,calc(100vw-48px))] max-h-[calc(100dvh-80px)] overflow-auto -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="avatarModal" role="dialog" aria-modal="true" hidden>
+  <section class="fixed z-[90] left-1/2 top-1/2 w-[min(720px,calc(100vw-48px))] max-h-[calc(100dvh-80px)] overflow-auto -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-4 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,.65)]" data-modal-target="avatarModal" role="dialog" aria-modal="true" hidden>
     <div class="flex items-start justify-between gap-6 mb-6">
       <div>
         <p class="brutalist-kicker mb-2">Perfil</p>
