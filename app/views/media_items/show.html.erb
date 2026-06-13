@@ -1,26 +1,32 @@
 <%= render layout: "shared/app_shell" do %>
-  <section class="grid grid-cols-[220px_1fr] gap-9 px-10 py-12 border-b border-[var(--line)]">
-    <img src="<%= cover_for(@media_item) %>" alt="Capa de <%= @media_item.title %>" class="w-full aspect-[2/3] object-cover">
-    <div>
+  <header class="mobile-library-topbar">
+    <button class="mobile-icon-button" type="button" aria-label="Abrir menu" data-action="mobile-menu#open"><%= lucide_icon "menu", size: 23 %></button>
+    <%= link_to "Detalhes", media_item_path(@media_item), class: "mobile-brand" %>
+    <%= link_to library_path, class: "mobile-icon-button", aria: { label: "Voltar para biblioteca" } do %><%= lucide_icon "arrow-left", size: 21 %><% end %>
+  </header>
+
+  <section class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 md:gap-9 px-4 md:px-10 py-8 md:py-12 border-b border-[var(--line)]">
+    <img src="<%= cover_for(@media_item) %>" alt="Capa de <%= @media_item.title %>" class="w-full max-w-[260px] md:max-w-none mx-auto aspect-[2/3] object-cover">
+    <div class="min-w-0 text-center md:text-left">
       <span class="inline-block text-[11px] font-medium tracking-[.12em] uppercase text-[var(--accent)] mb-3.5"><%= category_label(@media_item.category) %></span>
-      <h1><%= @media_item.title %></h1>
-      <p class="my-[18px] text-sm leading-[1.7] text-[var(--muted)] max-w-[640px]"><%= @media_item.description.presence || "Sem descrição cadastrada." %></p>
-      <div class="flex gap-3 items-center mt-7">
+      <h1 class="text-[clamp(32px,9vw,48px)] leading-[.95] break-words"><%= @media_item.title %></h1>
+      <p class="my-[18px] text-sm leading-[1.7] text-[var(--muted)] max-w-[640px] break-words"><%= @media_item.description.presence || "Sem descrição cadastrada." %></p>
+      <div class="flex flex-wrap gap-3 items-center justify-center md:justify-start mt-7">
         <%= link_to "Editar", edit_media_item_path(@media_item), class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--accent)] text-white text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
         <%= button_to "Remover", media_item_path(@media_item), method: :delete, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]", form: { data: { turbo_confirm: "Remover esta mídia?" } } %>
       </div>
     </div>
   </section>
 
-  <section class="grid grid-cols-4 border-b border-[var(--line)]">
-    <article class="p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Status</h2><p class="text-sm text-[var(--text)] leading-[1.6]"><span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(@media_item.status) %>"></span> <%= status_label(@media_item.status) %></p></article>
-    <article class="p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Progresso</h2><p class="text-sm text-[var(--text)] leading-[1.6]"><%= @media_item.progress_label.presence || "Sem progresso definido" %></p><div class="h-[3px] bg-[var(--line)] overflow-hidden mt-2.5"><span class="block h-full bg-[var(--accent)]" style="width: <%= @media_item.progress_percentage %>%"></span></div></article>
-    <article class="p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Avaliação</h2><p class="text-sm text-[var(--text)] leading-[1.6]"><%= @media_item.rating.present? ? "#{@media_item.rating}/10" : "Não avaliado" %></p></article>
-    <article class="p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Plataforma</h2><p class="text-sm text-[var(--text)] leading-[1.6]"><%= @media_item.platform.presence || "Não informada" %></p></article>
+  <section class="grid grid-cols-2 md:grid-cols-4 border-b border-[var(--line)]">
+    <article class="min-w-0 p-4 md:p-8 border-r border-b md:border-b-0 border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Status</h2><p class="text-sm text-[var(--text)] leading-[1.6] break-words"><span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(@media_item.status) %>"></span> <%= status_label(@media_item.status) %></p></article>
+    <article class="min-w-0 p-4 md:p-8 border-r border-b md:border-b-0 border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Progresso</h2><p class="text-sm text-[var(--text)] leading-[1.6] break-words"><%= @media_item.progress_label.presence || "Sem progresso definido" %></p><div class="h-[3px] bg-[var(--line)] overflow-hidden mt-2.5"><span class="block h-full bg-[var(--accent)]" style="width: <%= @media_item.progress_percentage %>%"></span></div></article>
+    <article class="min-w-0 p-4 md:p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Avaliação</h2><p class="text-sm text-[var(--text)] leading-[1.6] break-words"><%= @media_item.rating.present? ? "#{@media_item.rating}/10" : "Não avaliado" %></p></article>
+    <article class="min-w-0 p-4 md:p-8 border-r border-[var(--line)] [&:last-child]:border-r-0"><h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-2.5">Plataforma</h2><p class="text-sm text-[var(--text)] leading-[1.6] break-words"><%= @media_item.platform.presence || "Não informada" %></p></article>
   </section>
 
-  <section class="px-10 py-10 border-b border-[var(--line)]">
+  <section class="px-4 md:px-10 py-8 md:py-10 border-b border-[var(--line)]">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-4">Notas pessoais</h2>
-    <p class="text-sm leading-[1.7] text-[var(--muted)]"><%= simple_format(@media_item.notes.presence || "Nenhuma nota pessoal adicionada.") %></p>
+    <p class="text-sm leading-[1.7] text-[var(--muted)] break-words"><%= simple_format(@media_item.notes.presence || "Nenhuma nota pessoal adicionada.") %></p>
   </section>
 <% end %>
