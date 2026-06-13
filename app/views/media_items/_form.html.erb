@@ -1,12 +1,12 @@
 <%= form_with model: media_item, class: "grid", data: (local_assigns[:modal] ? { controller: "tmdb-search form-category", modal_target: "form", action: "input->modal#markDirty change->modal#markDirty click@window->tmdb-search#clickOutside" } : { controller: "tmdb-search form-category", action: "click@window->tmdb-search#clickOutside" }) do |form| %>
   <% if media_item.errors.any? %>
-    <div class="px-2 md:px-10 py-4 border-b border-[var(--line)] text-[var(--text)] text-[13px] bg-[var(--panel-muted)]">
+    <div class="px-4 md:px-10 py-4 border-b border-[var(--line)] text-[var(--text)] text-[13px] bg-[var(--panel-muted)]">
       <strong class="block mb-1 text-[11px] tracking-[.12em] uppercase text-[var(--text)]">Revise os campos:</strong>
       <%= media_item.errors.full_messages.to_sentence %>
     </div>
   <% end %>
 
-  <section class="px-2 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
+  <section class="px-4 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-6">Informações gerais</h2>
     <div class="grid bg-transparent grid-cols-1 md:grid-cols-2">
       <div class="px-2 md:px-5 py-[18px] md:border-b border-[var(--line)] [&:last-child]:border-b-0">
@@ -28,7 +28,7 @@
     </div>
   </section>
 
-  <section class="px-2 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
+  <section class="px-4 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-6">Progresso</h2>
     <div class="grid bg-transparent grid-cols-1 md:grid-cols-3">
       <label class="px-2 md:px-5 py-[18px] md:border-b border-[var(--line)] [&:last-child]:border-b-0 grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Data de início<%= form.date_field :started_at, placeholder: "dd/mm/aaaa", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--tertiary)] placeholder:text-[13px] w-full" %></label>
@@ -72,7 +72,7 @@
     </div>
   </section>
 
-  <div class="flex justify-end gap-3 px-2 md:px-10 py-6 border-b border-[var(--line)]">
+  <div class="flex justify-end gap-3 px-4 md:px-10 py-6 border-b border-[var(--line)]">
     <% if local_assigns[:modal] %>
       <button type="button" class="inline-flex items-center justify-center w-fit min-h-[48px] px-5 bg-[var(--panel-muted)] text-[var(--muted)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:text-[var(--text)]" data-action="modal#requestClose">Cancelar</button>
     <% else %>
