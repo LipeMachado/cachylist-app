@@ -55,7 +55,6 @@ export default class extends Controller {
         ${r.poster ? `<img src="${r.poster}" alt="" class="w-9 h-[54px] object-cover rounded flex-[0_0_36px]">` : '<span class="w-9 h-[54px] bg-[var(--line)] rounded flex-[0_0_36px]"></span>'}
         <div class="min-w-0 flex-1">
           <div class="font-medium truncate">${this.escapeHtml(r.title)}</div>
-          <div class="text-[11px] text-[var(--tertiary)]">${r.year || ''}${r.year && r.media_type ? ' · ' : ''}${r.media_type === 'movie' ? 'Filme' : r.media_type === 'tv' ? 'Série' : ''}${r.overview ? ' · ' + this.escapeHtml(r.overview) : ''}</div>
         </div>
       </button>
     `).join("")
