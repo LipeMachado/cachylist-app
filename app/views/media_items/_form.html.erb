@@ -8,7 +8,7 @@
 
   <section class="px-4 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-6">Informações gerais</h2>
-    <div class="grid bg-transparent grid-cols-1 md:grid-cols-2">
+    <div class="grid bg-transparent grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-x-6 md:gap-y-8">
       <div class="px-2 md:px-5 py-[18px] md:border-b border-[var(--line)] [&:last-child]:border-b-0">
         <label class="grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
           Título
@@ -30,7 +30,7 @@
 
   <section class="px-4 md:px-10 py-4 md:py-10 border-b border-[var(--line)]">
     <h2 class="text-[11px] font-medium tracking-[.12em] uppercase text-[var(--muted)] mb-6">Progresso</h2>
-    <div class="grid bg-transparent grid-cols-1 md:grid-cols-3">
+    <div class="grid bg-transparent grid-cols-1 md:grid-cols-3 gap-y-6 md:gap-x-6 md:gap-y-8">
       <label class="px-2 md:px-5 py-[18px] md:border-b border-[var(--line)] [&:last-child]:border-b-0 grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Data de início<%= form.date_field :started_at, placeholder: "dd/mm/aaaa", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--tertiary)] placeholder:text-[13px] w-full" %></label>
       <label class="px-2 md:px-5 py-[18px] md:border-b border-[var(--line)] [&:last-child]:border-b-0 grid gap-1.5 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">Data de conclusão<%= form.date_field :finished_at, placeholder: "dd/mm/aaaa", class: "mt-1.5 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--tertiary)] placeholder:text-[13px] w-full" %></label>
 
