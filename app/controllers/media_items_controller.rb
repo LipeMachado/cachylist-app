@@ -18,13 +18,19 @@ class MediaItemsController < ApplicationController
   def create
     @media_item = current_user.media_items.new(media_item_params)
 
-    if @media_item.save
-      render "create", formats: :turbo_stream
-    else
-      render turbo_stream: turbo_stream.replace("media_item_form",
-        partial: "media_items/form",
-        locals: { media_item: @media_item, modal: true }),
-        status: :unprocessable_entity
+    respond_to do |format|
+      if @media_item.save
+        format.turbo_stream
+        format.html { redirect_back fallback_location: library_path, notice: "Mídia criada com sucesso." }
+      else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace("media_item_form",
+            partial: "media_items/form",
+            locals: { media_item: @media_item, modal: true }),
+            status: :unprocessable_entity
+        end
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
