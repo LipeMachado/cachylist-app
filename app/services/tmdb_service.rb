@@ -6,7 +6,7 @@ class TmdbService
   IMAGE_BASE = "https://image.tmdb.org/t/p"
 
   def initialize
-    @token = Rails.application.credentials.dig(:tmdb, :api_token)
+    @token = ENV["TMDB_API_TOKEN"] || Rails.application.credentials.dig(:tmdb, :api_token)
     raise "TMDB API token not configured" unless @token
   end
 
