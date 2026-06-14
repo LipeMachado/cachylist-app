@@ -1,0 +1,2 @@
+<%= turbo_stream.prepend "flash-messages", partial: "shared/flash_toast", locals: { message: "Mídia criada com sucesso." } %>
+<%= turbo_stream.prepend "[data-kanban-status='#{@media_item.status}']", partial: "shared/media_card", locals: { item: @media_item } %>
