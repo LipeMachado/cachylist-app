@@ -11,6 +11,11 @@ export default class extends Controller {
 
   search() {
     clearTimeout(this.timeout)
+    if (this.selectedCategory() === "game") {
+      this.hideResults()
+      return
+    }
+
     const query = this.inputTarget.value.trim()
     if (query.length < 2) {
       this.hideResults()
@@ -112,6 +117,8 @@ export default class extends Controller {
   }
 
   keydown(event) {
+    if (this.selectedCategory() === "game") return
+
     const items = this.resultsTarget.querySelectorAll("button")
     if (items.length === 0) return
 
@@ -143,6 +150,10 @@ export default class extends Controller {
     if (!this.element.contains(event.target)) {
       this.hideResults()
     }
+  }
+
+  selectedCategory() {
+    return this.element.querySelector("select[name*='[category]']")?.value || document.querySelector("#media_item_category")?.value || ""
   }
 
   escapeHtml(str) {
