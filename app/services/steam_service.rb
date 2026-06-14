@@ -5,6 +5,10 @@ class SteamService
   SEARCH_URL = "https://store.steampowered.com/api/storesearch/"
   DETAILS_URL = "https://store.steampowered.com/api/appdetails"
 
+  def self.api_key
+    @api_key ||= Rails.application.credentials.steam_api_key.presence || ENV["STEAM_API_KEY"]
+  end
+
   def search(query)
     response = get(SEARCH_URL, { term: query, cc: "BR", l: "brazilian", page: 1 })
     Array(response["items"]).first(8)
