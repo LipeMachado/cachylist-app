@@ -1,7 +1,0 @@
-<%= turbo_stream.prepend "flash-messages" do %>
-  <p class="flash-message m-0 border border-[var(--line)] p-3.5 bg-[var(--panel-bg)] text-[var(--text)] animate-[toast-out_6s_ease_forwards]" onanimationend="event.target.remove()">Mídia criada com sucesso.</p>
-<% end %>
-
-<%= turbo_stream.prepend "[data-kanban-status='#{@media_item.status}']" do %>
-  <%= render "shared/media_card", item: @media_item %>
-<% end %>
