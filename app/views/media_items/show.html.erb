@@ -6,7 +6,7 @@
   </header>
 
   <section class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 md:gap-9 px-4 md:px-10 py-8 md:py-12 border-b border-[var(--line)]">
-    <img src="<%= cover_for(@media_item) %>" alt="Capa de <%= @media_item.title %>" class="w-full max-w-[260px] md:max-w-none mx-auto aspect-[2/3] object-contain bg-[var(--bg)]">
+    <img src="<%= cover_for(@media_item) %>" alt="Capa de <%= @media_item.title %>" class="w-full max-w-[260px] md:max-w-none mx-auto aspect-[2/3] object-cover">
     <div class="min-w-0 text-center md:text-left">
       <span class="inline-block text-[11px] font-medium tracking-[.12em] uppercase text-[var(--accent)] mb-3.5"><%= category_label(@media_item.category) %></span>
       <h1 class="text-[clamp(32px,9vw,48px)] leading-[.95] break-words"><%= @media_item.title %></h1>
