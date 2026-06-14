@@ -8,9 +8,7 @@
       </div>
       <p class="text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)] m-0 truncate"><%= category_label(item.category) %><%= " • #{item.release_year}" if item.release_year.present? %></p>
       <span class="text-[10px] text-[var(--tertiary)]"><%= item.progress_label.presence || item.platform.presence || "-" %></span>
-      <% if item.progress_percentage.positive? && !item.completed? %>
-        <div class="h-[3px] bg-[var(--line-soft)] overflow-hidden mt-2"><span class="block h-full bg-[var(--accent)] transition-[width]" style="width: <%= item.progress_percentage %>%"></span></div>
-      <% end %>
+      <div class="h-[3px] bg-[var(--line-soft)] overflow-hidden mt-2 <%= "invisible" unless item.progress_percentage.positive? && !item.completed? %>"><span class="block h-full bg-[var(--accent)] transition-[width]" style="width: <%= item.progress_percentage %>%"></span></div>
     </div>
     <span class="flex items-center justify-center text-[var(--muted)] flex-[0_0_24px] self-start mt-1" aria-hidden="true"><%= lucide_icon "grip-vertical", size: 14 %></span>
   <% end %>
