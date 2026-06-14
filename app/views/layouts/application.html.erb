@@ -27,15 +27,15 @@
 
   <body class="<%= request.path.start_with?("/app") || request.path == "/edit" ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
     <% if flash.any? %>
-      <div class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">
+      <div id="flash-messages" class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">
         <% flash.to_a.first(3).each do |type, message| %>
-          <p class="flash-message m-0 border border-[var(--line)] p-3.5 bg-[var(--panel-bg)] text-[var(--text)] animate-[toast-out_1.5s_ease_forwards]"><%= message %></p>
+          <p class="flash-message m-0 border border-[var(--line)] p-3.5 bg-[var(--panel-bg)] text-[var(--text)] animate-[toast-out_6s_ease_forwards]"><%= message %></p>
         <% end %>
       </div>
       <script>
         setTimeout(() => {
           document.querySelectorAll(".flash-message").forEach((flash) => flash.remove());
-        }, 1500);
+        }, 6000);
       </script>
     <% end %>
     <%= yield %>

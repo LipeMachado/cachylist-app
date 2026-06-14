@@ -110,6 +110,14 @@ export default class extends Controller {
     })
   }
 
+  onSubmitEnd(event) {
+    if (event.detail.success && this.hasFormTarget) {
+      this.dirty = false
+      this.formTarget.reset()
+      this.close()
+    }
+  }
+
   /* ── Delete account confirm ──────────────────────────── */
 
   requestDelete(event) {

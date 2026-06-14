@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "results", "coverUrl", "description", "releaseYear", "duration", "director", "totalEpisodes", "platform"]
+  static targets = ["input", "results", "coverUrl", "description", "releaseYear", "totalEpisodes", "platform"]
 
   connect() {
     this.selectedIndex = -1
@@ -11,7 +11,7 @@ export default class extends Controller {
 
   search() {
     clearTimeout(this.timeout)
-    if (!this.selectedCategory().match(/^(movie|series)$/)) {
+    if (this.selectedCategory() !== "anime") {
       this.hideResults()
       return
     }
@@ -23,7 +23,7 @@ export default class extends Controller {
     }
     this.showSkeleton()
     this.timeout = setTimeout(() => {
-      fetch(`/app/tmdb/search?query=${encodeURIComponent(query)}`)
+      fetch(`/app/jikan/search?query=${encodeURIComponent(query)}`)
         .then(r => r.json())
         .then(data => this.showResults(data))
         .catch(() => this.hideResults())
@@ -56,10 +56,11 @@ export default class extends Controller {
     if (results.length === 0) { this.hideResults(); return }
 
     this.resultsTarget.innerHTML = results.map((r, i) => `
-      <button type="button" class="flex items-center gap-3 px-4 py-3 text-left w-full hover:bg-[rgba(255,255,255,.06)] cursor-pointer border-0 bg-transparent text-[var(--text)] text-sm ${i === 0 ? 'bg-[rgba(255,255,255,.06)]' : ''}" data-index="${i}" data-action="tmdb-search#select">
+      <button type="button" class="flex items-center gap-3 px-4 py-3 text-left w-full hover:bg-[rgba(255,255,255,.06)] cursor-pointer border-0 bg-transparent text-[var(--text)] text-sm ${i === 0 ? 'bg-[rgba(255,255,255,.06)]' : ''}" data-index="${i}" data-action="jikan-search#select">
         ${r.poster ? `<img src="${r.poster}" alt="" class="w-9 h-[54px] object-cover rounded flex-[0_0_36px]">` : '<span class="w-9 h-[54px] bg-[var(--line)] rounded flex-[0_0_36px]"></span>'}
         <div class="min-w-0 flex-1">
           <div class="font-medium truncate">${this.escapeHtml(r.title)}</div>
+          ${r.year ? `<div class="text-[var(--muted)] text-xs">${r.year}</div>` : ''}
         </div>
       </button>
     `).join("")
@@ -77,11 +78,11 @@ export default class extends Controller {
     const index = parseInt(event.currentTarget.dataset.index)
     const result = this.resultsData[index]
     if (!result) return
-    this.fetchAndFill(result.id, result.media_type)
+    this.fetchAndFill(result.id)
   }
 
-  fetchAndFill(id, type) {
-    fetch(`/app/tmdb/details?id=${id}&type=${type}`)
+  fetchAndFill(id) {
+    fetch(`/app/jikan/details?id=${id}`)
       .then(r => r.json())
       .then(data => this.fillForm(data))
   }
@@ -108,8 +109,6 @@ export default class extends Controller {
       }
     }
 
-    if (this.hasDurationTarget && data.duration_minutes != null) this.durationTarget.value = data.duration_minutes
-    if (this.hasDirectorTarget && data.director) this.directorTarget.value = data.director
     if (this.hasTotalEpisodesTarget && data.total_episodes != null) this.totalEpisodesTarget.value = data.total_episodes
     if (this.hasPlatformTarget && data.platform) this.platformTarget.value = data.platform
 
@@ -117,7 +116,7 @@ export default class extends Controller {
   }
 
   keydown(event) {
-    if (!this.selectedCategory().match(/^(movie|series)$/)) return
+    if (this.selectedCategory() !== "anime") return
 
     const items = this.resultsTarget.querySelectorAll("button")
     if (items.length === 0) return

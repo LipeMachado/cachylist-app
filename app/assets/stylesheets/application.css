@@ -197,7 +197,7 @@
 html { scrollbar-color: rgba(232, 232, 226, 0.28) transparent; scrollbar-width: thin; }
 
 @keyframes toast-out {
-  0%, 72% { opacity: 1; transform: translateY(0); }
+  0%, 93% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(12px); }
 }
 

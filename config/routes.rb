@@ -40,6 +40,8 @@ Rails.application.routes.draw do
     get "tmdb/details", to: "tmdb#details"
     get "steam/search", to: "steam#search"
     get "steam/details", to: "steam#details"
+    get "jikan/search", to: "jikan#search"
+    get "jikan/details", to: "jikan#details"
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
