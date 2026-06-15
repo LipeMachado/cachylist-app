@@ -5,9 +5,10 @@ class MediaItem < ApplicationRecord
   before_validation :clear_non_episodic_progress_fields
 
   enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4 }
-  enum :status, { planned: 0, in_progress: 1, completed: 2, paused: 3, no_date: 4 }
+  enum :status, { backlog: 5, planned: 0, in_progress: 1, completed: 2, paused: 3, no_date: 4 }
 
   validates :title, :category, :status, presence: true
+  validates :title, uniqueness: { scope: :user_id, case_sensitive: false, message: "já existe na sua biblioteca" }
   validates :rating, inclusion: { in: 0..10 }, allow_blank: true
   validates :release_year, numericality: { only_integer: true, greater_than: 1800, less_than: 2200 }, allow_blank: true
 

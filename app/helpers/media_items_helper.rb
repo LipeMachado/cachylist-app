@@ -8,6 +8,7 @@ module MediaItemsHelper
   }.freeze
 
   STATUS_LABELS = {
+    "backlog" => "Backlog",
     "planned" => "Para Depois",
     "in_progress" => "Em Andamento",
     "completed" => "Concluído",
@@ -33,6 +34,17 @@ module MediaItemsHelper
 
   def status_class(status)
     "status-#{status.to_s.dasherize}"
+  end
+
+  SOURCE_LABELS = {
+    jikan: "Jikan (Anime)",
+    tmdb_movie: "TMDB (Filme)",
+    tmdb_tv: "TMDB (Série)",
+    steam: "Steam (Jogo)"
+  }.freeze
+
+  def source_label(source)
+    SOURCE_LABELS.fetch(source.to_sym, source.to_s.titleize)
   end
 
   def cover_for(item)

@@ -376,6 +376,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: .85;
 }
 
+.is-importing button,
+.is-importing a {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.import-search-results button:first-child {
+  border-top: 0;
+}
+
+.import-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--muted);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: import-spin 0.6s linear infinite;
+  display: inline-block;
+  flex: 0 0 14px;
+}
+
+@keyframes import-spin {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes purplePulse {
   0%, 100% { box-shadow: 0 0 4px var(--accent); opacity: .45; }
   50% { box-shadow: 0 0 14px var(--accent); opacity: .85; }

@@ -13,7 +13,8 @@ module ApplicationHelper
       { label: "Séries", path: category_library_path("series"), icon: "tv" },
       { label: "Filmes", path: category_library_path("movies"), icon: "film" },
       { label: "Livros", path: category_library_path("books"), icon: "book-open" },
-      { label: "Jogos", path: category_library_path("games"), icon: "gamepad-2" }
+      { label: "Jogos", path: category_library_path("games"), icon: "gamepad-2" },
+      { label: "Importar", path: import_media_items_path, icon: "upload" }
     ]
   end
 

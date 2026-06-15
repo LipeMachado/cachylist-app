@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_160335) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_041500) do
   create_schema "extensions"
 
   # These are extensions that must be enabled in order to support this database
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_160335) do
     t.index ["status"], name: "index_media_items_on_status"
     t.index ["user_id", "category", "status"], name: "index_media_items_on_user_id_and_category_and_status"
     t.index ["user_id", "status", "sort_order"], name: "index_media_items_on_user_id_and_status_and_sort_order"
+    t.index ["user_id", "title"], name: "index_media_items_on_user_id_and_title", unique: true
     t.index ["user_id"], name: "index_media_items_on_user_id"
   end
 

@@ -29,6 +29,10 @@ Rails.application.routes.draw do
     resources :media_items do
       collection do
         patch :reorder
+        get :import
+        post :import_preview
+        post :import_page
+        post :import_confirm
       end
 
       member do

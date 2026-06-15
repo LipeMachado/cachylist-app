@@ -12,7 +12,7 @@ class LibrariesController < ApplicationController
     @search_suggestions = current_user.media_items.flat_map { |item| [ item.title, item.platform, item.author ] }.compact_blank.uniq.sort
     @items = @items.to_a
     @items = @items.select { |item| searchable_text(item).include?(normalize_query(params[:query])) } if params[:query].present?
-    @items_by_status = MediaItem.statuses.keys.index_with do |status|
+    @items_by_status = %w[backlog planned in_progress completed paused no_date].index_with do |status|
       @items.select { |item| item.status == status }
     end
   end

@@ -1,0 +1,33 @@
+<%= render layout: "shared/app_shell" do %>
+  <div data-controller="import" data-action="keydown@window->import#keydown">
+    <div data-import-target="confirmBackdrop" data-action="click->import#cancelRemoveCard" hidden class="fixed inset-0 z-[90] bg-[var(--overlay-bg)]"></div>
+    <section data-import-target="confirmDialog" hidden class="fixed z-[90] left-1/2 top-1/2 w-[min(360px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--line)] p-6 shadow-[0_24px_80px_rgba(0,0,0,.65)]">
+      <p class="text-sm font-semibold text-[var(--text)] mb-1">Remover item</p>
+      <p class="text-xs text-[var(--muted)] mb-5">Tem certeza que deseja remover este item da importação?</p>
+      <div class="flex gap-2 justify-end">
+        <button type="button" data-action="import#cancelRemoveCard" class="inline-flex items-center justify-center min-h-[38px] px-4 bg-[var(--panel-muted)] text-[var(--muted)] text-[10px] font-semibold tracking-[.1em] uppercase cursor-pointer border-0 hover:text-[var(--text)] transition-colors">Cancelar</button>
+        <button type="button" data-action="import#confirmRemoveCard" class="inline-flex items-center justify-center min-h-[38px] px-4 bg-[#991b1b] text-white text-[10px] font-semibold tracking-[.1em] uppercase cursor-pointer border-0 hover:brightness-110 transition-[filter]">Remover</button>
+      </div>
+    </section>
+
+    <div class="px-10 py-10 border-b border-[var(--line)]">
+      <h1 class="text-xl font-extrabold tracking-[-.03em] m-0">Importar Lista</h1>
+      <p class="mt-3 text-sm leading-[1.7] text-[var(--muted)]">Faça upload de um arquivo .txt (um título por linha) ou .csv (com coluna <strong>title</strong>) para importar vários itens de uma vez. Você pode pesquisar dados nas APIs de anime, filmes, séries e jogos ao digitar o título.</p>
+    </div>
+
+    <div id="import-upload" class="px-10 py-16 border-b border-[var(--line)]">
+      <%= form_with url: import_preview_media_items_path, multipart: true, data: { turbo_stream: true, action: "turbo:submit-start->import#startLoading" } do |form| %>
+        <div class="max-w-lg">
+          <label class="grid gap-2 text-[11px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
+            Arquivo (.txt ou .csv)
+            <%= form.file_field :file, accept: ".txt,.csv", required: true, class: "mt-1 border border-[var(--line)] min-h-[40px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] file:border-0 file:bg-[var(--panel-muted)] file:text-[var(--text)] file:text-[11px] file:font-semibold file:tracking-[.12em] file:uppercase file:min-h-[38px] file:px-3 file:cursor-pointer file:mr-3" %>
+          </label>
+          <p class="mt-2 text-xs text-[var(--tertiary)]">Formatos aceitos: .txt (1 título por linha) ou .csv (colunas: title). Sem limite de itens.</p>
+          <%= form.submit "Analisar arquivo", data: { import_target: "analyzeBtn" }, class: "mt-8 inline-flex items-center justify-center w-fit min-h-[48px] px-6 bg-[var(--accent)] text-white text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="import-preview" class="hidden"></div>
+  </div>
+<% end %>

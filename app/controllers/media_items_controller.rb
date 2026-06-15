@@ -63,6 +63,102 @@ class MediaItemsController < ApplicationController
     head :ok
   end
 
+  def import
+    old_token = session.delete(:import_token)
+    if old_token
+      path = IMPORT_DIR.join(old_token)
+      File.delete(path) if File.exist?(path)
+    end
+  end
+
+  LIMIT = 50
+
+  IMPORT_DIR = Rails.root.join("tmp", "imports")
+
+  def import_preview
+    file = params[:file]
+    unless file
+      redirect_to import_media_items_path, alert: "Selecione um arquivo."
+      return
+    end
+
+    content = file.read.force_encoding("UTF-8")
+    service = ImportService.new
+    titles = service.parse_content(content, file.original_filename)
+
+    if titles.empty?
+      redirect_to import_media_items_path, alert: "Nenhum título encontrado no arquivo."
+      return
+    end
+
+    enriched = service.enrich_all(titles)
+
+    token = SecureRandom.hex(16)
+    FileUtils.mkdir_p(IMPORT_DIR)
+    File.write(IMPORT_DIR.join(token), enriched.to_json)
+    session[:import_token] = token
+
+    @page = 0
+    @preview_items = enriched[0, LIMIT]
+    @total_titles = enriched.size
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to library_path, notice: "#{@preview_items.size} itens encontrados para importar. Ative o JavaScript para usar o preview." }
+    end
+  end
+
+  def import_page
+    token = session[:import_token]
+
+    unless token
+      redirect_to import_media_items_path, alert: "Sessão expirada. Faça o upload novamente."
+      return
+    end
+
+    path = IMPORT_DIR.join(token)
+    unless File.exist?(path)
+      redirect_to import_media_items_path, alert: "Arquivo temporário não encontrado. Faça o upload novamente."
+      return
+    end
+
+    enriched = JSON.parse(File.read(path)).map(&:symbolize_keys)
+
+    @page = params[:page].to_i
+    @preview_items = enriched.drop(@page * LIMIT).first(LIMIT)
+    @total_titles = enriched.size
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to import_media_items_path, alert: "Ative o JavaScript para navegar entre páginas." }
+    end
+  end
+
+  def import_confirm
+    items = params[:items]
+
+    unless items.is_a?(Array) && items.any?
+      redirect_to import_media_items_path, alert: "Nenhum item para importar."
+      return
+    end
+
+    service = ImportService.new
+    created = service.create_items(items, current_user)
+
+    @import_count = created.size
+
+    token = session.delete(:import_token)
+    if token
+      path = IMPORT_DIR.join(token)
+      File.delete(path) if File.exist?(path)
+    end
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to library_path, notice: "#{@import_count} #{@import_count == 1 ? "item importado" : "itens importados"} com sucesso." }
+    end
+  end
+
   def destroy
     @media_item.destroy
     redirect_to library_path, notice: "Mídia removida com sucesso."
