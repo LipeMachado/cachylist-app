@@ -1,11 +1,10 @@
 <aside id="app-sidebar" class="sticky top-0 h-full bg-[var(--panel-bg)] border-r border-[var(--line)] grid grid-rows-[auto_auto_1fr_auto]" data-turbo-permanent data-controller="sidebar" data-action="turbo:load@window->sidebar#sync">
   <div class="mobile-drawer-header">
-<%= link_to dashboard_path, class: "block w-fit", data: { action: "mobile-menu#close" } do %>
-  <%= image_tag "logo.png", alt: "CachyList", class: "h-5 w-auto" %>
-<% end %>
+    <%= link_to dashboard_path, class: "block w-fit", data: { action: "mobile-menu#close" } do %>
+      <%= image_tag "logo.png", alt: "CachyList", class: "h-5 w-auto" %>
+    <% end %>
     <button type="button" aria-label="Fechar menu" data-action="mobile-menu#close"><%= lucide_icon "x", size: 26 %></button>
   </div>
-
   <div class="px-6 py-3 border-b border-[var(--line)] grid grid-cols-[54px_1fr] items-center gap-4">
     <button type="button" class="group relative w-[54px] h-[54px] border border-[var(--line)] grid place-items-center font-black text-lg text-[var(--text)] bg-[var(--surface-2)] overflow-hidden cursor-pointer" data-action="modal#openAvatarModal" aria-label="Editar avatar">
       <% if (avatar = avatar_image_for(current_user)) %>
@@ -20,7 +19,6 @@
       <span class="block mt-1 brutalist-link">Ver perfil ↗</span>
     <% end %>
   </div>
-
   <nav class="block py-4">
     <p class="px-6 mb-3 brutalist-kicker">Navegação</p>
     <% sidebar_nav_items.each do |item| %>
@@ -30,7 +28,6 @@
       <% end %>
     <% end %>
   </nav>
-
   <div class="px-6 py-6 border-t border-[var(--line)] flex flex-col justify-end">
     <button class="w-full min-h-[42px] border border-[var(--line)] bg-transparent text-[var(--muted)] grid grid-cols-[20px_1fr] items-center gap-2 px-3 text-left text-[11px] font-bold tracking-[.14em] uppercase cursor-pointer transition-[color,background,border-color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] hover:border-[var(--muted)]" type="button" aria-label="Sair" data-action="modal#requestLogout"><%= lucide_icon "log-out", size: 16 %><span>Sair</span></button>
     <p class="mt-5 mb-0 text-[10px] leading-5 text-[var(--muted)] tracking-[.14em] uppercase"><span class="inline-block w-2.5 h-2.5 bg-[var(--accent)] mr-2"></span>Cachylist v1.0</p>

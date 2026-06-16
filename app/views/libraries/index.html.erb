@@ -4,7 +4,6 @@
     <%= link_to (@selected_category.present? ? category_label(@selected_category).pluralize : "Biblioteca"), library_path, class: "mobile-brand" %>
     <%= link_to "#library-search", class: "mobile-icon-button", aria: { label: "Buscar" } do %><%= lucide_icon "search", size: 22 %><% end %>
   </header>
-
   <div class="library-hero grid grid-cols-[1fr_auto] items-center min-h-[150px] overflow-hidden border-b border-[var(--line)] bg-[var(--panel-bg)]">
     <div class="px-10 py-9 flex flex-col justify-center">
       <p class="brutalist-kicker mb-5">Acervo filtrável</p>
@@ -15,7 +14,6 @@
       <%= link_to "#", class: "inline-flex gap-3 items-center justify-center w-fit min-h-[48px] px-6 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-bold tracking-[.16em] uppercase whitespace-nowrap font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)] hover:border-[var(--accent-strong)]", data: { action: "modal#open", category_value: @selected_category } do %><%= lucide_icon "plus", size: 16 %> Nova mídia<% end %>
     </div>
   </div>
-
   <section class="bg-transparent p-0">
     <%= form_with url: request.path, method: :get, class: "library-filters grid grid-cols-[minmax(260px,1.4fr)_repeat(3,minmax(180px,.8fr))_auto] border-b border-[var(--line)] bg-[var(--panel-bg)]" do |form| %>
       <div class="relative border-r border-[var(--line)]" data-controller="search-dropdown" data-search-dropdown-items-value="<%= @search_suggestions.to_json %>" data-action="click@window->search-dropdown#clickOutside">
@@ -34,7 +32,6 @@
         <%= form.submit "Filtrar", class: "inline-flex items-center justify-center min-h-[58px] px-6 bg-[var(--panel-muted)] text-[var(--text)] text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--hover-bg)]" %>
       </div>
     <% end %>
-
     <% if @items.any? %>
       <div class="library-board grid grid-cols-5 overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
         <% @items_by_status.each do |status, items| %>

@@ -8,7 +8,6 @@
       <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--text)] text-[11px] font-semibold tracking-[.1em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:bg-[var(--surface)]" %>
     </div>
   </div>
-
   <section class="flex flex-wrap gap-4 px-10 py-10">
     <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total de Mídias", value: @stats.total, accent: "purple" %>
     <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>

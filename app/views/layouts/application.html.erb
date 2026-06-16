@@ -8,15 +8,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <%= favicon_link_tag "logo.png", type: "image/png" %>
     <%= favicon_link_tag "logo.png", rel: "apple-touch-icon", type: "image/png" %>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,7 +20,6 @@
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-
   <body class="<%= request.path.start_with?("/app") || request.path == "/edit" ? "app-body antialiased m-0 min-h-screen" : "public-body antialiased m-0 min-h-screen" %>" data-controller="motion">
     <% if flash.any? %>
       <div id="flash-messages" class="fixed z-50 right-5.5 bottom-5.5 grid gap-2.5 w-[min(380px,calc(100vw-32px))] pointer-events-none">

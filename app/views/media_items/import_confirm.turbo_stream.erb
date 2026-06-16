@@ -2,7 +2,6 @@
   <div id="import-upload" class="px-10 py-6 border-b border-[var(--line)]">
   </div>
 <% end %>
-
 <%= turbo_stream.replace "import-preview" do %>
   <div id="import-preview" class="px-10 py-16 border-b border-[var(--line)]">
     <p class="text-sm text-[var(--text)] font-semibold"><%= @import_count %> <%= @import_count == 1 ? "item importado" : "itens importados" %> com sucesso!</p>
@@ -10,5 +9,4 @@
     <%= link_to "Ir para Biblioteca →", library_path, class: "mt-6 inline-flex items-center justify-center w-fit min-h-[48px] px-6 bg-[var(--accent)] text-white text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110" %>
   </div>
 <% end %>
-
 <%= turbo_stream.prepend "flash-messages", partial: "shared/flash_toast", locals: { message: "#{@import_count} #{@import_count == 1 ? "item importado" : "itens importados"} com sucesso." } %>

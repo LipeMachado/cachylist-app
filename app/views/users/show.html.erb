@@ -4,7 +4,6 @@
     <%= link_to "Perfil", user_path(@user), class: "mobile-brand" %>
     <%= link_to dashboard_path, class: "mobile-icon-button", aria: { label: "Voltar ao dashboard" } do %><%= lucide_icon "layout-dashboard", size: 21 %><% end %>
   </header>
-
   <div class="px-4 py-10 md:py-[25px] text-center border-b border-[var(--line)] bg-[var(--panel-bg)]">
     <% avatar_content = capture do %>
       <% if (avatar = avatar_image_for(@user)) %>
@@ -31,7 +30,6 @@
       <% end %>
     </div>
   </div>
-
   <section class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 border-b border-[var(--line)]">
     <%= render "shared/stat_card", icon: lucide_icon("layers", size: 18), label: "Total", value: @stats.total, accent: "purple" %>
     <%= render "shared/stat_card", icon: lucide_icon("check-circle", size: 18), label: "Concluídas", value: @stats.count(:completed), meta: "#{@stats.percentage(:completed)}%", accent: "green" %>
@@ -39,7 +37,6 @@
     <%= render "shared/stat_card", icon: lucide_icon("pause", size: 18), label: "Pausadas", value: @stats.count(:paused), meta: "#{@stats.percentage(:paused)}%", accent: "orange" %>
     <%= render "shared/stat_card", icon: lucide_icon("clock", size: 18), label: "Para Depois", value: @stats.count(:planned), meta: "#{@stats.percentage(:planned)}%", accent: "gray" %>
   </section>
-
   <% if @recent_items.any? %>
     <section class="bg-transparent p-0">
       <div class="min-h-[72px] px-4 md:px-10 border-b border-[var(--line)] flex flex-wrap justify-between items-center gap-3">

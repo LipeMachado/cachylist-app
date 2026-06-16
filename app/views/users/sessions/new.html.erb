@@ -3,7 +3,6 @@
   <div class="relative z-10 flex flex-col justify-center w-[min(520px,88vw)] mx-auto px-2 md:px-5">
     <%= link_to "/" do %><%= image_tag "logo.png", alt: "CachyList", class: "h-20 w-auto mx-auto block mb-5" %><% end %>
     <p class="text-[#c4c0ca] text-[1.15rem] mb-[42px] text-center">Seu lugar. Suas histórias.</p>
-
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "grid gap-5" }) do |f| %>
       <label class="text-[var(--text)] grid gap-2.5 font-semibold">E-mail<%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com", class: "w-full border border-[var(--line)] text-[var(--text)] bg-[var(--field-bg)] px-3 py-[15px] outline-none" %></label>
       <label class="text-[#ddd9e7] grid gap-2.5 font-semibold">Senha
@@ -20,7 +19,6 @@
       <% end %>
       <%= f.submit "Entrar", class: "primary-button inline-flex items-center justify-center w-full min-h-[54px] border-0 px-7 text-white font-extrabold cursor-pointer whitespace-nowrap" %>
     <% end %>
-
     <div class="flex items-center gap-[18px] text-[#878493] my-7"><span>ou</span></div>
     <%= link_to "Criar conta", new_registration_path(resource_name), class: "inline-flex items-center justify-center w-full min-h-[48px] px-[22px] border border-[var(--line)] text-[var(--accent-strong)] bg-transparent font-bold whitespace-nowrap cursor-pointer transition-[background,opacity,border-color] duration-200 hover:bg-[var(--hover-bg)]" %>
     <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: "auth-link text-[var(--purple-2)] mt-7 text-center font-bold transition-opacity duration-200 hover:opacity-75" %>

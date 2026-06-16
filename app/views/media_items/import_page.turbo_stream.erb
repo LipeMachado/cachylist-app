@@ -6,57 +6,52 @@
     </p>
   </div>
 <% end %>
-
 <%= turbo_stream.replace "import-page-items" do %>
   <div id="import-page-items" class="divide-y divide-[var(--line)] border-b border-[var(--line)]">
-  <% @preview_items.each do |item| %>
-    <div class="flex gap-4 px-10 py-5 items-start hover:bg-[var(--hover-bg)] transition-colors" data-import-target="card">
-      <img src="<%= item[:cover_url].presence || "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=120&q=80" %>" alt="" class="w-[68px] h-[96px] object-cover flex-[0_0_68px] border border-[var(--line-soft)]" data-import-cover>
-
-      <div class="flex-1 min-w-0 grid grid-cols-[1fr_200px_auto] gap-x-4 gap-y-3">
-        <div class="relative">
-          <input type="hidden" name="items[][original_title]" value="<%= item[:original_title] %>">
-          <input type="hidden" name="items[][cover_url]" value="<%= item[:cover_url] %>">
-          <input type="hidden" name="items[][description]" value="<%= item[:description] %>">
-          <input type="hidden" name="items[][release_year]" value="<%= item[:release_year] %>">
-          <input type="hidden" name="items[][platform]" value="<%= item[:platform] %>">
-          <input type="hidden" name="items[][status]" value="backlog">
-          <label class="grid gap-1 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
-            Título
-            <input type="text" name="items[][title]" value="<%= item[:title] %>" required data-action="input->import#onTitleInput" class="mt-1 border border-[var(--line)] min-h-[36px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] w-full">
-          </label>
-          <div class="import-search-results absolute left-0 top-full w-full z-50 border border-[var(--line)] bg-[var(--panel-bg)] shadow-xl max-h-[240px] overflow-y-auto" hidden></div>
+    <% @preview_items.each do |item| %>
+      <div class="flex gap-4 px-10 py-5 items-start hover:bg-[var(--hover-bg)] transition-colors" data-import-target="card">
+        <img src="<%= item[:cover_url].presence || "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=120&q=80" %>" alt="" class="w-[68px] h-[96px] object-cover flex-[0_0_68px] border border-[var(--line-soft)]" data-import-cover>
+        <div class="flex-1 min-w-0 grid grid-cols-[1fr_200px_auto] gap-x-4 gap-y-3">
+          <div class="relative">
+            <input type="hidden" name="items[][original_title]" value="<%= item[:original_title] %>">
+            <input type="hidden" name="items[][cover_url]" value="<%= item[:cover_url] %>">
+            <input type="hidden" name="items[][description]" value="<%= item[:description] %>">
+            <input type="hidden" name="items[][release_year]" value="<%= item[:release_year] %>">
+            <input type="hidden" name="items[][platform]" value="<%= item[:platform] %>">
+            <input type="hidden" name="items[][status]" value="backlog">
+            <label class="grid gap-1 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
+              Título
+              <input type="text" name="items[][title]" value="<%= item[:title] %>" required data-action="input->import#onTitleInput" class="mt-1 border border-[var(--line)] min-h-[36px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] w-full">
+            </label>
+            <div class="import-search-results absolute left-0 top-full w-full z-50 border border-[var(--line)] bg-[var(--panel-bg)] shadow-xl max-h-[240px] overflow-y-auto" hidden></div>
+          </div>
+          <div>
+            <label class="grid gap-1 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
+              Categoria
+              <select name="items[][category]" data-action="change->import#onCategoryChange" class="mt-1 border border-[var(--line)] min-h-[36px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] appearance-none w-full">
+                <% MediaItem.categories.keys.each do |cat| %>
+                  <option value="<%= cat %>" <%= "selected" if cat == item[:category] %>><%= category_label(cat) %></option>
+                  <% end %>
+                </select>
+              </label>
+            </div>
+            <div class="self-start">
+              <button type="button" data-action="import#requestRemoveCard" class="w-8 h-8 flex items-center justify-center bg-[#991b1b] text-[var(--text)] cursor-pointer transition-[filter] border-0 hover:brightness-110" title="Remover">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <label class="grid gap-1 text-[10px] font-semibold tracking-[.12em] uppercase text-[var(--muted)]">
-            Categoria
-            <select name="items[][category]" data-action="change->import#onCategoryChange" class="mt-1 border border-[var(--line)] min-h-[36px] px-3 text-[13px] bg-transparent text-[var(--text)] outline-none focus:border-[var(--accent)] appearance-none w-full">
-              <% MediaItem.categories.keys.each do |cat| %>
-                <option value="<%= cat %>" <%= "selected" if cat == item[:category] %>><%= category_label(cat) %></option>
-              <% end %>
-            </select>
-          </label>
-        </div>
-
-        <div class="self-start">
-          <button type="button" data-action="import#requestRemoveCard" class="w-8 h-8 flex items-center justify-center bg-[#991b1b] text-[var(--text)] cursor-pointer transition-[filter] border-0 hover:brightness-110" title="Remover">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          </button>
-        </div>
-      </div>
+      <% end %>
     </div>
   <% end %>
-  </div>
-<% end %>
-
-<%= turbo_stream.replace "import-page-nav" do %>
-  <div id="import-page-nav" class="px-10 py-6 border-b border-[var(--line)] flex items-center gap-4">
-    <button type="submit" data-import-target="submitBtn" class="inline-flex items-center justify-center w-fit min-h-[48px] px-6 bg-[var(--accent)] text-white text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110">
-      <span data-import-target="count">Importar itens →</span>
-    </button>
-    <% if @total_titles > (@page + 1) * MediaItemsController::LIMIT %>
-      <%= button_tag "Próxima página →", type: "button", data: { action: "import#loadPage", page: @page + 1 }, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--muted)] text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:text-[var(--text)] hover:border-[var(--accent)]" %>
-    <% end %>
-  </div>
-<% end %>
+  <%= turbo_stream.replace "import-page-nav" do %>
+    <div id="import-page-nav" class="px-10 py-6 border-b border-[var(--line)] flex items-center gap-4">
+      <button type="submit" data-import-target="submitBtn" class="inline-flex items-center justify-center w-fit min-h-[48px] px-6 bg-[var(--accent)] text-white text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit border-none transition-[background,color,border-color] duration-150 hover:brightness-110">
+        <span data-import-target="count">Importar itens →</span>
+      </button>
+      <% if @total_titles > (@page + 1) * MediaItemsController::LIMIT %>
+        <%= button_tag "Próxima página →", type: "button", data: { action: "import#loadPage", page: @page + 1 }, class: "inline-flex items-center justify-center w-fit min-h-[48px] px-5 border border-[var(--line)] bg-transparent text-[var(--muted)] text-[11px] font-bold tracking-[.14em] uppercase whitespace-nowrap cursor-pointer font-inherit transition-[background,color,border-color] duration-150 hover:text-[var(--text)] hover:border-[var(--accent)]" %>
+      <% end %>
+    </div>
+  <% end %>
