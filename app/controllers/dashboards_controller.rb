@@ -6,7 +6,7 @@ class DashboardsController < ApplicationController
     @continue_items = current_user.media_items.where(status: %i[in_progress paused]).recent.limit(3)
     @continue_items = current_user.media_items.recent.limit(3) if @continue_items.empty?
     @latest_items = current_user.media_items.recent.limit(3)
-    @items_by_status = %w[backlog planned in_progress completed paused no_date].index_with do |status|
+    @items_by_status = %w[planned in_progress completed paused].index_with do |status|
       @media_items.where(status: status)
     end
   end

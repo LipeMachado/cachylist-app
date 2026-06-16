@@ -1,11 +1,24 @@
-<aside id="app-sidebar" class="sticky top-0 h-full bg-[var(--panel-bg)] border-r border-[var(--line)] grid grid-rows-[auto_auto_1fr_auto]" data-turbo-permanent data-controller="sidebar" data-action="turbo:load@window->sidebar#sync">
+<aside id="app-sidebar" class="sticky top-0 h-full bg-[var(--panel-bg)] border-r border-[var(--line)] grid grid-rows-[auto_auto_1fr_auto]" data-turbo-permanent>
+  <div class="sidebar-rail">
+    <%= link_to dashboard_path, class: "sidebar-rail-logo", aria: { label: "CachyList" } do %>
+      <%= image_tag "logo.png", alt: "CachyList", class: "h-5 w-auto" %>
+    <% end %>
+    <button class="sidebar-expand-button" type="button" aria-label="Abrir menu lateral" data-action="sidebar#expand"><%= lucide_icon "panel-left-open", size: 18 %></button>
+    <nav class="sidebar-rail-nav" aria-label="Navegação compacta">
+      <% sidebar_nav_items.each do |item| %>
+        <%= link_to item[:path], class: "sidebar-rail-link #{current_page?(item[:path]) ? "active" : ""}", title: item[:label], aria: { label: item[:label] }, data: { sidebar_target: "link", path: item[:path], action: "sidebar#setActive" } do %>
+          <%= lucide_icon item[:icon], size: 18 %>
+        <% end %>
+      <% end %>
+    </nav>
+  </div>
   <div class="mobile-drawer-header">
     <%= link_to dashboard_path, class: "block w-fit", data: { action: "mobile-menu#close" } do %>
       <%= image_tag "logo.png", alt: "CachyList", class: "h-5 w-auto" %>
     <% end %>
     <button type="button" aria-label="Fechar menu" data-action="mobile-menu#close"><%= lucide_icon "x", size: 26 %></button>
   </div>
-  <div class="px-6 py-3 border-b border-[var(--line)] grid grid-cols-[54px_1fr] items-center gap-4">
+  <div class="sidebar-profile-row px-6 py-3 border-b border-[var(--line)] grid items-center gap-4">
     <button type="button" class="group relative w-[54px] h-[54px] border border-[var(--line)] grid place-items-center font-black text-lg text-[var(--text)] bg-[var(--surface-2)] overflow-hidden cursor-pointer" data-action="modal#openAvatarModal" aria-label="Editar avatar">
       <% if (avatar = avatar_image_for(current_user)) %>
         <%= image_tag avatar, alt: "Avatar de #{current_user.display_name}", class: "w-full h-full object-cover" %>
@@ -18,11 +31,12 @@
       <span class="block text-sm font-semibold text-[var(--text)] truncate"><%= current_user.display_name %></span>
       <span class="block mt-1 brutalist-link">Ver perfil ↗</span>
     <% end %>
+    <button class="sidebar-collapse-button" type="button" aria-label="Recolher menu lateral" data-action="sidebar#collapse"><%= lucide_icon "panel-left-close", size: 18 %></button>
   </div>
   <nav class="block py-4">
     <p class="px-6 mb-3 brutalist-kicker">Navegação</p>
     <% sidebar_nav_items.each do |item| %>
-      <%= link_to item[:path], class: "min-h-[44px] px-6 flex items-center gap-3 text-[var(--muted)] text-[12px] font-semibold tracking-[.14em] uppercase whitespace-nowrap transition-[background,color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] #{current_page?(item[:path]) ? "active text-[var(--text)] bg-[var(--hover-bg)] shadow-[inset_3px_0_0_var(--accent)]" : ""}", data: { sidebar_target: "link", path: item[:path], action: "mobile-menu#close" } do %>
+      <%= link_to item[:path], class: "min-h-[44px] px-6 flex items-center gap-3 text-[var(--muted)] text-[12px] font-semibold tracking-[.14em] uppercase whitespace-nowrap transition-[background,color] duration-150 hover:text-[var(--text)] hover:bg-[var(--hover-bg)] #{current_page?(item[:path]) ? "active text-[var(--text)] bg-[var(--hover-bg)] shadow-[inset_3px_0_0_var(--accent)]" : ""}", data: { sidebar_target: "link", path: item[:path], action: "mobile-menu#close sidebar#setActive" } do %>
         <span class="w-[18px] h-[18px] text-current inline-grid place-items-center"><%= lucide_icon item[:icon], size: 19 %></span>
         <span><%= item[:label] %></span>
       <% end %>

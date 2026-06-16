@@ -3,7 +3,6 @@ require "csv"
 class ImportService
   PREVIEW_LIMIT = 50
   MAX_CONCURRENT = 5
-  JIKAN_LOCK = Mutex.new
 
   def parse_file(uploaded_file)
     content = uploaded_file.read
@@ -18,6 +17,29 @@ class ImportService
       parse_csv(content)
     else
       parse_text(content)
+    end
+  end
+
+  def identify_titles(titles)
+    titles.map do |title|
+      anidb = identify_anidb(title)
+      if anidb
+        {
+          original_title: title,
+          title: anidb[:title],
+          category: "anime",
+          cover_url: nil, description: nil, release_year: nil, platform: nil,
+          source: :anidb,
+          aid: anidb[:aid]
+        }
+      else
+        {
+          original_title: title, title: title,
+          category: "movie",
+          cover_url: nil, description: nil, release_year: nil, platform: nil,
+          source: nil, aid: nil
+        }
+      end
     end
   end
 
@@ -87,7 +109,7 @@ class ImportService
 
   def self.category_for_api(source)
     case source
-    when :jikan then "anime"
+    when :anidb then "anime"
     when :tmdb_movie then "movie"
     when :tmdb_tv then "series"
     when :steam then "game"
@@ -125,7 +147,7 @@ class ImportService
 
     results = {}
 
-    search_result = search_jikan(title)
+    search_result = search_anidb(title)
     results[search_result[:source]] = search_result if search_result
 
     search_result = search_tmdb(title)
@@ -144,30 +166,31 @@ class ImportService
     result
   end
 
-  @@_jikan_last = 0.0
+  def identify_anidb(title)
+    results = AniDbService.new.search_anime(title)
+    return nil if results.empty?
+    anime = results.first
+    { title: anime[:title], aid: anime[:aid], category: "anime", source: :anidb }
+  end
 
-  def search_jikan(title)
-    JIKAN_LOCK.synchronize do
-      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @@_jikan_last
-      sleep(0.35 - elapsed) if elapsed < 0.35
-      @@_jikan_last = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    end
-
-    results = JikanService.new.search_anime(title)
+  def search_anidb(title)
+    results = AniDbService.new.search_anime(title)
     return nil if results.empty?
 
     anime = results.first
+    details = AniDbService.new.details(anime[:aid])
+
     {
-      title: anime["title"],
+      title: details["title"].presence || anime[:title],
       category: "anime",
-      cover_url: anime.dig("images", "jpg", "image_url"),
-      description: anime["synopsis"],
-      release_year: extract_year(anime.dig("aired", "from")),
-      platform: "Crunchyroll",
-      source: :jikan
+      cover_url: details["poster_url"],
+      description: details["overview"],
+      release_year: details["year"],
+      platform: nil,
+      source: :anidb
     }
   rescue StandardError => e
-    Rails.logger.error "ImportService Jikan error for #{title}: #{e.message}"
+    Rails.logger.error "ImportService AniDB error for #{title}: #{e.message}"
     nil
   end
 
@@ -224,7 +247,7 @@ class ImportService
   end
 
   def pick_best(results)
-    priority = %i[jikan tmdb_movie tmdb_tv steam]
+    priority = %i[anidb tmdb_movie tmdb_tv steam]
     priority.each do |source|
       return results[source] if results[source]
     end

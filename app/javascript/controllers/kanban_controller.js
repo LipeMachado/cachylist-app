@@ -10,12 +10,29 @@ export default class extends Controller {
     this.sourceColumn = null
     this.sourceNextSibling = null
     this.dropCommitted = false
+    this.mouseState = null
+    this.ghost = null
+    this.currentDropColumn = null
+    this.suppressNextClick = false
+    this.boundPointerDragMove = this.pointerDragMove.bind(this)
+    this.boundPointerDragEnd = this.pointerDragEnd.bind(this)
     this.recalcCounts()
   }
+
+  disconnect() {
+    this.cleanupMouseDrag()
+    document.removeEventListener("pointermove", this.boundPointerDragMove)
+    document.removeEventListener("pointerup", this.boundPointerDragEnd)
+    document.removeEventListener("pointercancel", this.boundPointerDragEnd)
+  }
+
+  /* ── Native HTML5 Drag & Drop ─────────────────────────── */
 
   dragStart(event) {
     const card = event.currentTarget.closest("[data-kanban-card-id]")
     if (!card) return
+
+    this.cleanupMouseDrag()
 
     this.dragItem = card
     this.sourceColumn = card.closest("[data-kanban-target='column']")
@@ -115,6 +132,178 @@ export default class extends Controller {
     })
   }
 
+  /* ── Pointer Drag & Drop (mouse + touch) ───────────────── */
+
+  pointerDragStart(event) {
+    if (event.pointerType === "mouse" && event.button !== 0) return
+    const card = event.currentTarget.closest("[data-kanban-card-id]")
+    if (!card || this.dragItem) return
+
+    this.mouseState = {
+      card,
+      startX: event.clientX,
+      startY: event.clientY,
+      dragging: false,
+      pointerId: event.pointerId
+    }
+
+    document.addEventListener("pointermove", this.boundPointerDragMove, { passive: false })
+    document.addEventListener("pointerup", this.boundPointerDragEnd)
+    document.addEventListener("pointercancel", this.boundPointerDragEnd)
+  }
+
+  suppressClick(event) {
+    if (!this.suppressNextClick) return
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    this.suppressNextClick = false
+  }
+
+  pointerDragMove(event) {
+    if (!this.mouseState) return
+    if (this.mouseState.pointerId !== event.pointerId) return
+
+    if (!this.mouseState.dragging) {
+      const dx = event.clientX - this.mouseState.startX
+      const dy = event.clientY - this.mouseState.startY
+      if (Math.abs(dx) <= 5 && Math.abs(dy) <= 5) return
+      event.preventDefault()
+      this.mouseState.dragging = true
+      this.suppressNextClick = true
+      this.initiateMouseDrag(this.mouseState.card, event)
+      return
+    }
+
+    event.preventDefault()
+    this.autoScrollBoard(event.clientX)
+
+    if (this.ghost) {
+      this.ghost.style.left = `${event.clientX - this.ghost.offsetWidth / 2}px`
+      this.ghost.style.top = `${event.clientY - 10}px`
+    }
+
+    this.columnTargets.forEach(col => col.classList.remove(this.dragOverClass || "is-drag-over"))
+    this.currentDropColumn = null
+
+    if (!this.ghost) return
+
+    this.ghost.style.display = "none"
+    const element = document.elementFromPoint(event.clientX, event.clientY)
+    this.ghost.style.display = ""
+
+    if (element) {
+      const column = element.closest("[data-kanban-target='column']")
+      if (column) {
+        column.classList.add(this.dragOverClass || "is-drag-over")
+        this.currentDropColumn = column
+
+        const afterElement = this.dragAfterElement(column, event.clientY)
+        if (this.mouseState && this.mouseState.card) {
+          column.insertBefore(this.mouseState.card, afterElement)
+        }
+      }
+    }
+  }
+
+  pointerDragEnd(event) {
+    if (!this.mouseState) return
+    if (event.pointerId && this.mouseState.pointerId !== event.pointerId) return
+
+    if (this.mouseState.dragging) {
+      this.commitMouseDrop()
+    }
+
+    this.cleanupMouseDrag()
+    document.removeEventListener("pointermove", this.boundPointerDragMove)
+    document.removeEventListener("pointerup", this.boundPointerDragEnd)
+    document.removeEventListener("pointercancel", this.boundPointerDragEnd)
+  }
+
+  initiateMouseDrag(card, event) {
+    this.sourceColumn = card.closest("[data-kanban-target='column']")
+    this.sourceNextSibling = card.nextElementSibling
+    this.currentDropColumn = null
+
+    card.classList.add(this.draggingClass || "is-dragging")
+
+    this.ghost = card.cloneNode(true)
+    this.ghost.style.position = "fixed"
+    this.ghost.style.pointerEvents = "none"
+    this.ghost.style.zIndex = "9999"
+    this.ghost.style.opacity = "0.9"
+    this.ghost.style.border = "1px solid var(--accent)"
+    this.ghost.style.outline = "2px solid var(--accent)"
+    this.ghost.style.outlineOffset = "-2px"
+    this.ghost.style.width = `${card.offsetWidth}px`
+    this.ghost.style.setProperty("border-radius", "0", "important")
+    this.ghost.style.setProperty("box-shadow", "none", "important")
+    this.ghost.style.background = "var(--surface)"
+    this.ghost.style.left = `${event.clientX - card.offsetWidth / 2}px`
+    this.ghost.style.top = `${event.clientY - 10}px`
+    document.body.appendChild(this.ghost)
+  }
+
+  commitMouseDrop() {
+    const targetColumn = this.currentDropColumn
+    this.columnTargets.forEach(col => col.classList.remove(this.dragOverClass || "is-drag-over"))
+
+    const card = this.mouseState?.card
+    const sourceColumn = this.sourceColumn
+    const sourceNextSibling = this.sourceNextSibling
+
+    if (!card) return
+
+    if (!targetColumn) {
+      sourceColumn?.insertBefore(card, sourceNextSibling)
+      return
+    }
+
+    const newStatus = targetColumn.dataset.kanbanStatus
+    const oldStatus = card.dataset.kanbanStatus
+
+    card.dataset.kanbanStatus = newStatus
+    this.updateCardStatusColor(card, newStatus)
+    this.recalcCounts()
+
+    fetch("/app/media_items/reorder", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("[name='csrf-token']")?.content,
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ columns: this.orderedColumnsPayload() })
+    }).then(r => {
+      if (!r.ok) throw new Error()
+      const turboFrame = card.closest("turbo-frame")
+      if (turboFrame) turboFrame.reload()
+    }).catch(() => {
+      sourceColumn?.insertBefore(card, sourceNextSibling)
+      card.dataset.kanbanStatus = oldStatus
+      this.updateCardStatusColor(card, oldStatus)
+      this.recalcCounts()
+    })
+  }
+
+  cleanupMouseDrag() {
+    if (this.ghost) {
+      document.body.removeChild(this.ghost)
+      this.ghost = null
+    }
+
+    if (this.mouseState?.card) {
+      this.mouseState.card.classList.remove(this.draggingClass || "is-dragging")
+    }
+
+    this.columnTargets.forEach(col => col.classList.remove(this.dragOverClass || "is-drag-over"))
+    this.currentDropColumn = null
+    this.sourceColumn = null
+    this.sourceNextSibling = null
+    this.mouseState = null
+  }
+
+  /* ── Shared helpers ───────────────────────────────────── */
+
   dragAfterElement(column, y) {
     const cards = [...column.querySelectorAll("[data-kanban-card-id]:not(.is-dragging)")]
 
@@ -125,6 +314,18 @@ export default class extends Controller {
       if (offset < 0 && offset > closest.offset) return { offset, element: child }
       return closest
     }, { offset: Number.NEGATIVE_INFINITY, element: null }).element
+  }
+
+  autoScrollBoard(x) {
+    const box = this.element.getBoundingClientRect()
+    const edge = 48
+    const speed = 16
+
+    if (x > box.right - edge) {
+      this.element.scrollLeft += speed
+    } else if (x < box.left + edge) {
+      this.element.scrollLeft -= speed
+    }
   }
 
   orderedColumnsPayload() {

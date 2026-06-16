@@ -11,7 +11,7 @@ export default class extends Controller {
 
   search() {
     clearTimeout(this.timeout)
-    if (this.selectedCategory() !== "anime") {
+    if (!this.selectedCategory().match(/^(anime|anime_movie)$/)) {
       this.hideResults()
       return
     }
@@ -23,7 +23,7 @@ export default class extends Controller {
     }
     this.showSkeleton()
     this.timeout = setTimeout(() => {
-      fetch(`/app/jikan/search?query=${encodeURIComponent(query)}`)
+      fetch(`/app/anidb/search?query=${encodeURIComponent(query)}`)
         .then(r => r.json())
         .then(data => this.showResults(data))
         .catch(() => this.hideResults())
@@ -56,16 +56,48 @@ export default class extends Controller {
     if (results.length === 0) { this.hideResults(); return }
 
     this.resultsTarget.innerHTML = results.map((r, i) => `
-      <button type="button" class="flex items-center gap-3 px-4 py-3 text-left w-full hover:bg-[rgba(255,255,255,.06)] cursor-pointer border-0 bg-transparent text-[var(--text)] text-sm ${i === 0 ? 'bg-[rgba(255,255,255,.06)]' : ''}" data-index="${i}" data-action="jikan-search#select">
-        ${r.poster ? `<img src="${r.poster}" alt="" class="w-9 h-[54px] object-cover rounded flex-[0_0_36px]">` : '<span class="w-9 h-[54px] bg-[var(--line)] rounded flex-[0_0_36px]"></span>'}
+      <button type="button" class="flex items-center gap-3 px-4 py-3 text-left w-full hover:bg-[rgba(255,255,255,.06)] cursor-pointer border-0 bg-transparent text-[var(--text)] text-sm ${i === 0 ? 'bg-[rgba(255,255,255,.06)]' : ''}" data-index="${i}" data-action="anidb-search#select">
+        ${r.poster ? `<img src="${r.poster}" alt="" class="w-9 h-[54px] object-cover rounded flex-[0_0_36px]">` : `<span data-preview-id="${r.id}" class="w-9 h-[54px] bg-[var(--line)] rounded flex-[0_0_36px]"></span>`}
         <div class="min-w-0 flex-1">
           <div class="font-medium truncate">${this.escapeHtml(r.title)}</div>
-          ${r.year ? `<div class="text-[var(--muted)] text-xs">${r.year}</div>` : ''}
+          <div data-year-id="${r.id}" class="text-[var(--muted)] text-xs">${r.year || ''}</div>
         </div>
       </button>
     `).join("")
     this.resultsTarget.hidden = false
     this.selectedIndex = 0
+    this.loadPreviewDetails(results.slice(0, 3))
+  }
+
+  async loadPreviewDetails(results) {
+    for (const result of results) {
+      if (!this.resultsData.find(r => r.id === result.id)) return
+
+      try {
+        const response = await fetch(`/app/anidb/details?id=${result.id}`)
+        const details = await response.json()
+        this.updatePreview(result.id, details)
+      } catch (_error) {
+        return
+      }
+    }
+  }
+
+  updatePreview(id, details) {
+    const result = this.resultsData.find(r => r.id === id)
+    if (result) Object.assign(result, details)
+
+    const placeholder = this.resultsTarget.querySelector(`[data-preview-id="${id}"]`)
+    if (placeholder && details.poster_url) {
+      const img = document.createElement("img")
+      img.src = details.poster_url
+      img.alt = ""
+      img.className = "w-9 h-[54px] object-cover rounded flex-[0_0_36px]"
+      placeholder.replaceWith(img)
+    }
+
+    const year = this.resultsTarget.querySelector(`[data-year-id="${id}"]`)
+    if (year && details.release_year) year.textContent = details.release_year
   }
 
   hideResults() {
@@ -82,7 +114,7 @@ export default class extends Controller {
   }
 
   fetchAndFill(id) {
-    fetch(`/app/jikan/details?id=${id}`)
+    fetch(`/app/anidb/details?id=${id}`)
       .then(r => r.json())
       .then(data => this.fillForm(data))
   }
@@ -93,7 +125,10 @@ export default class extends Controller {
     if (this.hasDescriptionTarget) this.descriptionTarget.value = data.overview || ""
     if (this.hasReleaseYearTarget) this.releaseYearTarget.value = data.release_year || ""
 
-    if (data.category) {
+    const currentCategory = this.selectedCategory()
+    const nextCategory = currentCategory === "anime_movie" ? currentCategory : data.category
+
+    if (nextCategory) {
       const selectors = [
         "select[data-modal-target='category']",
         "select[name*='[category]']",
@@ -102,7 +137,7 @@ export default class extends Controller {
       for (const sel of selectors) {
         const el = document.querySelector(sel)
         if (el) {
-          el.value = data.category
+          el.value = nextCategory
           el.dispatchEvent(new Event("change", { bubbles: true }))
           break
         }
@@ -116,7 +151,7 @@ export default class extends Controller {
   }
 
   keydown(event) {
-    if (this.selectedCategory() !== "anime") return
+    if (!this.selectedCategory().match(/^(anime|anime_movie)$/)) return
 
     const items = this.resultsTarget.querySelectorAll("button")
     if (items.length === 0) return

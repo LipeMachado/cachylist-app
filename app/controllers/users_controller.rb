@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @stats = MediaItemStats.new(@user.media_items)
     @recent_items = @user.media_items.recent.limit(10)
-    @items_by_status = MediaItem.statuses.keys.index_with do |status|
+    @items_by_status = %w[planned in_progress completed paused].index_with do |status|
       @user.media_items.where(status: status).board_order
     end
   end

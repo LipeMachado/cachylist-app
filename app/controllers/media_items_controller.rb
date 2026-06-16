@@ -91,7 +91,7 @@ class MediaItemsController < ApplicationController
       return
     end
 
-    enriched = service.enrich_all(titles)
+    enriched = service.identify_titles(titles)
 
     token = SecureRandom.hex(16)
     FileUtils.mkdir_p(IMPORT_DIR)

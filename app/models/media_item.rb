@@ -4,7 +4,7 @@ class MediaItem < ApplicationRecord
   before_validation :assign_sort_order, on: :create
   before_validation :clear_non_episodic_progress_fields
 
-  enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4 }
+  enum :category, { anime: 0, series: 1, movie: 2, book: 3, game: 4, anime_movie: 5 }
   enum :status, { backlog: 5, planned: 0, in_progress: 1, completed: 2, paused: 3, no_date: 4 }
 
   validates :title, :category, :status, presence: true
@@ -29,7 +29,7 @@ class MediaItem < ApplicationRecord
       "#{current_page || 0}/#{total_pages || "?"} pág."
     when "game"
       hours_played.present? ? "#{hours_played}h jogadas" : nil
-    when "movie"
+    when "movie", "anime_movie"
       duration_minutes.present? ? "#{duration_minutes} min" : nil
     end
   end

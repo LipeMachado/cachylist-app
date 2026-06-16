@@ -71,11 +71,110 @@
 
 .app-main {
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
   position: relative;
   background:
     linear-gradient(135deg, rgba(232,232,226,.035), transparent 28%),
     radial-gradient(circle at 82% 12%, rgba(232,232,226,.055), transparent 26%),
     var(--bg);
+}
+
+.app-frame {
+  transition: grid-template-columns .22s ease;
+}
+
+.app-frame.sidebar-collapsed {
+  grid-template-columns: 72px 1fr;
+}
+
+#app-sidebar {
+  min-width: 0;
+  transition: transform .22s ease, opacity .16s ease;
+}
+
+.sidebar-rail {
+  display: none;
+}
+
+.sidebar-profile-row {
+  grid-template-columns: 54px 1fr auto;
+}
+
+.sidebar-collapse-button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.sidebar-collapse-button:hover {
+  background: var(--hover-bg);
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+.app-frame.sidebar-collapsed #app-sidebar {
+  grid-template-rows: 1fr;
+}
+
+.app-frame.sidebar-collapsed #app-sidebar > :not(.sidebar-rail) {
+  display: none;
+}
+
+.app-frame.sidebar-collapsed .sidebar-rail {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  justify-items: center;
+  gap: 14px;
+  padding: 18px 0;
+}
+
+.sidebar-rail-logo,
+.sidebar-expand-button,
+.sidebar-rail-link {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+}
+
+.sidebar-rail-logo {
+  background: var(--surface-2);
+}
+
+.sidebar-rail-logo img {
+  max-width: 26px;
+  max-height: 26px;
+}
+
+.sidebar-expand-button,
+.sidebar-rail-link {
+  background: transparent;
+  color: var(--muted);
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.sidebar-expand-button:hover,
+.sidebar-rail-link:hover,
+.sidebar-rail-link.active {
+  background: var(--hover-bg);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.sidebar-rail-nav {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding-top: 8px;
 }
 
 .app-body h1,
@@ -331,7 +430,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 22px;
+  width: 28px;
   pointer-events: auto;
   overflow: hidden;
   left: var(--bar-left, calc((var(--bar-index) + 1) * 100% / (var(--bar-count) + 1)));
@@ -353,17 +452,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .library-pulse-bars span i {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 2px;
-  height: 30%;
-  background: linear-gradient(180deg, transparent, var(--accent), transparent);
-  opacity: .38;
-  transform: translate(-50%, 0);
-  filter: drop-shadow(0 0 8px var(--accent));
-  transition: opacity .35s ease;
-  will-change: transform;
+  display: none;
 }
 
 .library-pulse-bars span:hover::before {
@@ -437,6 +526,47 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 8px;
   }
 
+  .app-frame.sidebar-collapsed {
+    grid-template-columns: none;
+  }
+
+  .app-frame.sidebar-collapsed #app-sidebar {
+    grid-template-rows: auto auto 1fr auto;
+    transform: translateX(calc(-100% - 12px));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .app-frame.sidebar-collapsed #app-sidebar > .mobile-drawer-header {
+    display: flex;
+  }
+
+  .app-frame.sidebar-collapsed #app-sidebar > .sidebar-profile-row {
+    display: grid;
+  }
+
+  .app-frame.sidebar-collapsed #app-sidebar > nav {
+    display: block;
+  }
+
+  .app-frame.sidebar-collapsed #app-sidebar > div:last-child {
+    display: flex;
+  }
+
+  .app-frame.sidebar-collapsed.mobile-menu-open #app-sidebar {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .sidebar-collapse-button,
+  .sidebar-expand-button,
+  .sidebar-rail {
+    display: none;
+  }
+
   .dashboard-desktop {
     display: none;
   }
@@ -450,7 +580,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: calc(100dvh - 8px);
     border: 1px solid var(--line);
     transform: translateX(calc(-100% - 12px));
-    transition: transform .28s ease;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform .28s ease, opacity .2s ease, visibility 0s linear .28s;
     background:
       radial-gradient(circle at 10% 5%, rgba(141, 99, 255, .13), transparent 28%),
       var(--panel-bg);
@@ -458,6 +591,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .mobile-menu-open #app-sidebar {
     transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
   }
 
   .mobile-menu-overlay {
@@ -556,7 +693,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .app-main {
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
     min-height: calc(100dvh - 8px);
     background:
       radial-gradient(circle at 12% 3%, rgba(141, 99, 255, .11), transparent 30%),
@@ -966,16 +1104,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .library-board {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    overflow: visible;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
     padding: 0 10px 28px;
     border-bottom: 0;
   }
 
   .library-board > div {
-    min-width: 0;
+    min-width: 220px;
     border: 1px solid rgba(120,120,122,.32);
     background:
       linear-gradient(115deg, rgba(232,232,226,.035), transparent 70%),
@@ -1182,14 +1320,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding-right: 20px;
   }
 
-  .dashboard-desktop > section:last-child > div:nth-child(2),
-  .library-board {
+  .dashboard-desktop > section:last-child > div:nth-child(2) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     overflow: visible;
   }
 
-  .dashboard-desktop > section:last-child > div:nth-child(2) > div,
-  .library-board > div {
+  .library-board {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .dashboard-desktop > section:last-child > div:nth-child(2) > div {
     min-width: 0;
   }
 
@@ -1292,4 +1433,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   filter: blur(0);
   transform: scale(1);
+}
+
+.library-board,
+[data-controller="kanban"] {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.library-board {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.app-main > section,
+.app-main > .library-hero,
+.app-main > .mobile-library-topbar {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.library-filters {
+  max-width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, .8fr)) auto;
+}
+
+.library-filters > * {
+  min-width: 0;
+}
+
+.kanban-column {
+  flex: 1 0 260px;
+  min-width: 260px;
+}
+
+.library-board::-webkit-scrollbar,
+[data-controller="kanban"]::-webkit-scrollbar {
+  width: 0;
+  height: 6px;
+}
+
+.library-board::-webkit-scrollbar-track,
+[data-controller="kanban"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.library-board::-webkit-scrollbar-thumb,
+[data-controller="kanban"]::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 0;
 }

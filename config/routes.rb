@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
     get "library", to: "libraries#index", as: :library
     get "library/:category", to: "libraries#index", as: :category_library,
-      constraints: { category: /animes|series|movies|books|games/ }
+      constraints: { category: /animes|series|movies|anime_movies|books|games/ }
 
     resources :users, only: :show do
       member do
@@ -44,8 +44,9 @@ Rails.application.routes.draw do
     get "tmdb/details", to: "tmdb#details"
     get "steam/search", to: "steam#search"
     get "steam/details", to: "steam#details"
-    get "jikan/search", to: "jikan#search"
-    get "jikan/details", to: "jikan#details"
+    get "anidb/search", to: "anidb#search"
+    get "anidb/details", to: "anidb#details"
+    get "anidb/image", to: "anidb#image"
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

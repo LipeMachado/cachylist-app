@@ -4,7 +4,8 @@ module MediaItemsHelper
     "series" => "Série",
     "movie" => "Filme",
     "book" => "Livro",
-    "game" => "Jogo"
+    "game" => "Jogo",
+    "anime_movie" => "Filmes/Animes"
   }.freeze
 
   STATUS_LABELS = {
@@ -21,7 +22,8 @@ module MediaItemsHelper
     "series" => "series",
     "movie" => "movies",
     "book" => "books",
-    "game" => "games"
+    "game" => "games",
+    "anime_movie" => "anime_movies"
   }.freeze
 
   def category_label(category)
@@ -37,7 +39,7 @@ module MediaItemsHelper
   end
 
   SOURCE_LABELS = {
-    jikan: "Jikan (Anime)",
+    anidb: "AniDB (Anime)",
     tmdb_movie: "TMDB (Filme)",
     tmdb_tv: "TMDB (Série)",
     steam: "Steam (Jogo)"

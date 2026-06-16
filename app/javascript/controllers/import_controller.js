@@ -8,12 +8,21 @@ export default class extends Controller {
     document.addEventListener("click", this.boundClickOutside)
     this.boundResetLoading = this.resetLoading.bind(this)
     document.addEventListener("turbo:submit-end", this.boundResetLoading)
+    this.boundTurboRender = this.onTurboRender.bind(this)
+    document.addEventListener("turbo:render", this.boundTurboRender)
     this.updateCount()
+    setTimeout(() => this.enrichVisibleCards(), 100)
   }
 
   disconnect() {
     document.removeEventListener("click", this.boundClickOutside)
     document.removeEventListener("turbo:submit-end", this.boundResetLoading)
+    document.removeEventListener("turbo:render", this.boundTurboRender)
+  }
+
+  onTurboRender() {
+    this.updateCount()
+    setTimeout(() => this.enrichVisibleCards(), 100)
   }
 
   resetLoading() {
@@ -182,13 +191,16 @@ export default class extends Controller {
     const categorySelect = card.querySelector("[name='items[][category]']")
     const coverImg = card.querySelector("[data-import-cover]")
 
-    if (titleInput) titleInput.value = details.title || result.title || ""
-    if (coverInput) coverInput.value = details.poster_url || result.poster || ""
-    if (coverImg) coverImg.src = details.poster_url || result.poster || coverImg.src
-    if (descriptionInput) descriptionInput.value = details.overview || ""
-    if (releaseYearInput) releaseYearInput.value = details.release_year || ""
+    const nextCategory = category || categorySelect?.value || details.category
+    const nextPoster = details.poster_url || result.poster
+
+    if (titleInput && (details.title || result.title)) titleInput.value = details.title || result.title
+    if (coverInput && nextPoster) coverInput.value = nextPoster
+    if (coverImg && nextPoster) coverImg.src = nextPoster
+    if (descriptionInput && details.overview) descriptionInput.value = details.overview
+    if (releaseYearInput && details.release_year) releaseYearInput.value = details.release_year
     if (platformInput && details.platform) platformInput.value = details.platform
-    if (categorySelect && details.category) categorySelect.value = details.category
+    if (categorySelect && nextCategory) categorySelect.value = nextCategory
   }
 
   keydown(event) {
@@ -276,6 +288,32 @@ export default class extends Controller {
     }
   }
 
+  /* ── Lazy enrichment of visible cards ───────────────── */
+
+  async enrichVisibleCards() {
+    if (this._enrichingVisibleCards) return
+    this._enrichingVisibleCards = true
+
+    const cards = this.cardTargets.filter(card => {
+      const aid = card.dataset.aid
+      if (!aid || card.dataset.detailsLoaded === "true") return false
+      const cover = card.querySelector("[data-import-cover]")
+      return !cover || cover.src.includes("images.unsplash.com")
+    }).slice(0, 2)
+
+    for (const card of cards) {
+      try {
+        const response = await fetch(`/app/anidb/details?id=${card.dataset.aid}`)
+        const data = await response.json()
+        this.fillCardFromDetails(card, {}, data)
+        card.dataset.detailsLoaded = "true"
+      } catch (_error) {}
+      await new Promise(resolve => setTimeout(resolve, 3000))
+    }
+
+    this._enrichingVisibleCards = false
+  }
+
   /* ── Search results helpers ─────────────────────────── */
 
   closeAllSearchResults() {
@@ -291,7 +329,8 @@ export default class extends Controller {
 
   searchPath(category) {
     const paths = {
-      anime: "/app/jikan/search",
+      anime: "/app/anidb/search",
+      anime_movie: "/app/anidb/search",
       movie: "/app/tmdb/search",
       series: "/app/tmdb/search",
       game: "/app/steam/search"
@@ -302,7 +341,8 @@ export default class extends Controller {
   detailsUrl(category, result) {
     const id = result.id
     switch (category) {
-      case "anime": return `/app/jikan/details?id=${id}`
+      case "anime":
+      case "anime_movie": return `/app/anidb/details?id=${id}`
       case "movie": return `/app/tmdb/details?id=${id}&type=movie`
       case "series": return `/app/tmdb/details?id=${id}&type=tv`
       case "game": return `/app/steam/details?id=${id}`

@@ -64,7 +64,7 @@ export default class extends Controller {
 
   updateTitle(category) {
     if (!this.hasTitleTarget) return
-    const labels = { anime: "Anime", series: "Série", movie: "Filme", book: "Livro", game: "Jogo" }
+    const labels = { anime: "Anime", series: "Série", movie: "Filme", book: "Livro", game: "Jogo", anime_movie: "Filmes/Animes" }
     const label = labels[category]
     this.titleTarget.textContent = label ? `Adicionar ${label}` : "Adicionar mídia"
   }

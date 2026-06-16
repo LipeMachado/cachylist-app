@@ -23,7 +23,7 @@
       <% unless @selected_category.present? %>
         <%= form.select :category, MediaItem.categories.keys.map { |key| [category_label(key), key] }, { include_blank: "Todas as categorias", selected: params[:category] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
       <% end %>
-      <%= form.select :status, MediaItem.statuses.keys.map { |key| [status_label(key), key] }, { include_blank: "Todos os status", selected: params[:status] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
+      <%= form.select :status, %w[backlog planned in_progress completed paused].map { |key| [status_label(key), key] }, { include_blank: "Todos os status", selected: params[:status] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
       <%= form.select :platform, @platforms, { include_blank: "Todas as plataformas", selected: params[:platform] }, class: "min-h-[58px] border-0 bg-[var(--panel-bg)] text-[var(--text)] px-5 outline-none text-sm w-full font-inherit appearance-none border-r border-[var(--line)] hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:shadow-[inset_0_-2px_0_var(--accent)]" %>
       <div class="flex justify-end border-l border-[var(--line)]">
         <% if params.slice(:query, :category, :status, :platform).values.any?(&:present?) %>
@@ -33,9 +33,9 @@
       </div>
     <% end %>
     <% if @items.any? %>
-      <div class="library-board grid grid-cols-5 overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
+      <div class="library-board flex overflow-x-auto border-b border-[var(--line)]" data-controller="kanban" data-kanban-dragging-class="is-dragging" data-kanban-drag-over-class="is-drag-over">
         <% @items_by_status.each do |status, items| %>
-          <div class="min-w-[220px] border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
+          <div class="kanban-column border-r border-[var(--line)] bg-[var(--column-bg)] [&:last-child]:border-r-0" data-kanban-target="column" data-kanban-status="<%= status %>" data-action="dragover->kanban#allowDrop dragenter->kanban#dragEnter dragleave->kanban#dragLeave drop->kanban#drop">
             <header class="min-h-[60px] px-6 border-b border-[var(--line)] flex items-center gap-2 text-[10px] font-bold tracking-[.16em] uppercase text-[var(--muted)]">
               <span class="w-1.5 h-1.5 bg-[var(--accent)] inline-block flex-[0_0_6px] <%= status_class(status) %>"></span>
               <strong class="font-bold text-[var(--muted)] truncate"><%= status_label(status) %></strong>
