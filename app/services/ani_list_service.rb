@@ -12,9 +12,9 @@ class AniListService
     normalized = normalize(query)
     return [] if normalized.blank?
 
-    cache_key = "anilist:search:#{normalized}"
-    cached = Rails.cache.read(cache_key)
-    return cached if cached
+    if (cached = read_cache("anilist:search:#{normalized}"))
+      return cached
+    end
 
     variables = { search: query, perPage: SEARCH_LIMIT }
     response = post(query_search, variables)
@@ -22,7 +22,7 @@ class AniListService
     media = response.dig("data", "Page", "media") || []
     results = media.map { |m| format_search_result(m) }
 
-    Rails.cache.write(cache_key, results, expires_in: SEARCH_CACHE_TTL)
+    write_cache("anilist:search:#{normalized}", results, SEARCH_CACHE_TTL)
     results
   rescue StandardError => e
     Rails.logger.error "AniList search error: #{e.message}"
@@ -31,8 +31,10 @@ class AniListService
 
   def details(id)
     cache_key = "anilist:details:#{DETAILS_CACHE_VERSION}:#{id}"
-    cached = Rails.cache.read(cache_key)
-    return cached if cached
+
+    if (cached = read_cache(cache_key))
+      return cached
+    end
 
     variables = { id: id.to_i }
     response = post(query_details, variables)
@@ -42,7 +44,7 @@ class AniListService
 
     result = format_details(media)
 
-    Rails.cache.write(cache_key, result, expires_in: DETAILS_CACHE_TTL)
+    write_cache(cache_key, result, DETAILS_CACHE_TTL)
     result
   rescue StandardError => e
     Rails.logger.error "AniList details error for #{id}: #{e.message}"
@@ -131,5 +133,17 @@ class AniListService
 
   def normalize(value)
     value.to_s.downcase.unicode_normalize(:nfkd).gsub(/\p{Mn}/, "").gsub(/[^\p{Alnum}]+/u, " ").squish
+  end
+
+  def read_cache(key)
+    Rails.cache.read(key)
+  rescue ActiveRecord::StatementInvalid
+    nil
+  end
+
+  def write_cache(key, value, ttl)
+    Rails.cache.write(key, value, expires_in: ttl)
+  rescue ActiveRecord::StatementInvalid
+    nil
   end
 end

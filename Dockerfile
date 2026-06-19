@@ -30,4 +30,4 @@ RUN groupadd --system --gid 1000 rails && \
 USER 1000:1000
 
 EXPOSE 3000
-CMD ["sh", "-c", "bin/rails db:prepare db:migrate:cache db:migrate:queue db:migrate:cable 2>/dev/null || true && bin/rails server -b 0.0.0.0 -p ${PORT:-3000}"]
+CMD ["sh", "-c", "bin/rails db:prepare 2>/dev/null || true && bin/rails server -b 0.0.0.0 -p ${PORT:-3000}"]
