@@ -21,26 +21,26 @@ class ImportService
   end
 
   def identify_titles(titles)
-    titles.map do |title|
-      anidb = identify_anidb(title)
-      if anidb
-        {
-          original_title: title,
-          title: anidb[:title],
-          category: "anime",
-          cover_url: nil, description: nil, release_year: nil, platform: nil,
-          source: :anidb,
-          aid: anidb[:aid]
-        }
-      else
-        {
-          original_title: title, title: title,
-          category: "movie",
-          cover_url: nil, description: nil, release_year: nil, platform: nil,
-          source: nil, aid: nil
-        }
+    results = Array.new(titles.size)
+    mutex = Mutex.new
+    queue = Queue.new
+    titles.each_with_index { |t, i| queue << [t, i] }
+
+    threads = MAX_CONCURRENT.times.map do
+      Thread.new do
+        loop do
+          work = nil
+          mutex.synchronize { work = queue.pop(true) rescue nil }
+          break unless work
+          title, idx = work
+          result = identify_anilist(title)
+          mutex.synchronize { results[idx] = result }
+        end
       end
     end
+
+    threads.each(&:join)
+    results
   end
 
   def build_preview(titles, offset: 0, limit: PREVIEW_LIMIT)
@@ -109,7 +109,7 @@ class ImportService
 
   def self.category_for_api(source)
     case source
-    when :anidb then "anime"
+    when :anilist then "anime"
     when :tmdb_movie then "movie"
     when :tmdb_tv then "series"
     when :steam then "game"
@@ -147,7 +147,7 @@ class ImportService
 
     results = {}
 
-    search_result = search_anidb(title)
+    search_result = search_anilist(title)
     results[search_result[:source]] = search_result if search_result
 
     search_result = search_tmdb(title)
@@ -166,31 +166,57 @@ class ImportService
     result
   end
 
-  def identify_anidb(title)
-    results = AniDbService.new.search_anime(title)
-    return nil if results.empty?
-    anime = results.first
-    { title: anime[:title], aid: anime[:aid], category: "anime", source: :anidb }
+  def identify_anilist(title)
+    results = AniListService.new.search_anime(title)
+    if results.any?
+      best = results.first
+      category = best[:format] == "MOVIE" ? "anime_movie" : "anime"
+      {
+        original_title: title,
+        title: best[:title],
+        category: category,
+        cover_url: nil, description: nil, release_year: nil, platform: nil,
+        source: :anilist,
+        anilist_id: best[:id]
+      }
+    else
+      {
+        original_title: title, title: title,
+        category: "movie",
+        cover_url: nil, description: nil, release_year: nil, platform: nil,
+        source: nil, anilist_id: nil
+      }
+    end
+  rescue StandardError => e
+    Rails.logger.error "ImportService AniList identify error for #{title}: #{e.message}"
+    {
+      original_title: title, title: title,
+      category: "movie",
+      cover_url: nil, description: nil, release_year: nil, platform: nil,
+      source: nil, anilist_id: nil
+    }
   end
 
-  def search_anidb(title)
-    results = AniDbService.new.search_anime(title)
+  def search_anilist(title)
+    results = AniListService.new.search_anime(title)
     return nil if results.empty?
 
     anime = results.first
-    details = AniDbService.new.details(anime[:aid])
+    details = AniListService.new.details(anime[:id])
+
+    category = details["category"].presence || (anime[:format] == "MOVIE" ? "anime_movie" : "anime")
 
     {
       title: details["title"].presence || anime[:title],
-      category: "anime",
-      cover_url: details["poster_url"],
+      category: category,
+      cover_url: details["poster_url"].presence || anime[:poster],
       description: details["overview"],
-      release_year: details["year"],
+      release_year: details["release_year"] || anime[:year],
       platform: nil,
-      source: :anidb
+      source: :anilist
     }
   rescue StandardError => e
-    Rails.logger.error "ImportService AniDB error for #{title}: #{e.message}"
+    Rails.logger.error "ImportService AniList error for #{title}: #{e.message}"
     nil
   end
 
@@ -247,7 +273,7 @@ class ImportService
   end
 
   def pick_best(results)
-    priority = %i[anidb tmdb_movie tmdb_tv steam]
+    priority = %i[anilist tmdb_movie tmdb_tv steam]
     priority.each do |source|
       return results[source] if results[source]
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_041500) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_19_000000) do
   create_schema "extensions"
 
   # These are extensions that must be enabled in order to support this database
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_041500) do
     t.string "title", null: false
     t.integer "total_episodes"
     t.integer "total_pages"
+    t.integer "total_seasons"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.boolean "wants_platinum", default: false, null: false

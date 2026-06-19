@@ -22,7 +22,7 @@ class MediaItem < ApplicationRecord
   def progress_label
     case category
     when "anime", "series"
-      [ current_season.presence && "S#{current_season}", current_episode.presence && "E#{current_episode}", total_episodes.presence && "de #{total_episodes}" ].compact.join(" • ").presence
+      [ current_season.presence && "S#{current_season}", total_seasons.presence && "de #{total_seasons} temp.", current_episode.presence && "E#{current_episode}", total_episodes.presence && "de #{total_episodes}" ].compact.join(" • ").presence
     when "book"
       return nil if current_page.blank? && total_pages.blank?
 
@@ -55,6 +55,7 @@ class MediaItem < ApplicationRecord
     return if anime? || series?
 
     self.current_season = nil
+    self.total_seasons = nil
     self.current_episode = nil
     self.total_episodes = nil
   end

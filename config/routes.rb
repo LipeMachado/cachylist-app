@@ -44,9 +44,8 @@ Rails.application.routes.draw do
     get "tmdb/details", to: "tmdb#details"
     get "steam/search", to: "steam#search"
     get "steam/details", to: "steam#details"
-    get "anidb/search", to: "anidb#search"
-    get "anidb/details", to: "anidb#details"
-    get "anidb/image", to: "anidb#image"
+    get "anilist/search", to: "anilist#search"
+    get "anilist/details", to: "anilist#details"
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

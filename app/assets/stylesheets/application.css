@@ -394,13 +394,40 @@ html { scrollbar-color: rgba(232, 232, 226, 0.28) transparent; scrollbar-width: 
 .is-dragging { opacity: 0.5; }
 .is-drag-over { background: rgba(232, 232, 226, 0.055); }
 
-.modal-open {
+body.modal-open {
   overflow: hidden;
+  position: fixed;
+  inset: 0;
 }
 
-html.modal-open,
-.app-body.modal-open {
-  overflow: hidden;
+.remember-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.remember-container {
+  position: relative;
+}
+
+.remember-box {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--field-bg);
+  transition: background 0.15s, border-color 0.15s;
+  color: transparent;
+}
+
+.remember-input:checked + .remember-box {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {

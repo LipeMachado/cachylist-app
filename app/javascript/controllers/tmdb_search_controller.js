@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "results", "coverUrl", "description", "releaseYear", "duration", "director", "totalEpisodes", "platform"]
+  static targets = ["input", "results", "coverUrl", "description", "releaseYear", "duration", "director", "currentSeason", "totalSeasons", "currentEpisode", "totalEpisodes", "platform"]
 
   connect() {
     this.selectedIndex = -1
@@ -110,6 +110,11 @@ export default class extends Controller {
 
     if (this.hasDurationTarget && data.duration_minutes != null) this.durationTarget.value = data.duration_minutes
     if (this.hasDirectorTarget && data.director) this.directorTarget.value = data.director
+    if (data.category === "series") {
+      if (this.hasCurrentSeasonTarget) this.currentSeasonTarget.value = 1
+      if (this.hasCurrentEpisodeTarget) this.currentEpisodeTarget.value = 0
+    }
+    if (this.hasTotalSeasonsTarget && data.total_seasons != null) this.totalSeasonsTarget.value = data.total_seasons
     if (this.hasTotalEpisodesTarget && data.total_episodes != null) this.totalEpisodesTarget.value = data.total_episodes
     if (this.hasPlatformTarget && data.platform) this.platformTarget.value = data.platform
 

@@ -37,8 +37,7 @@ gem "image_processing", "~> 1.2"
 # CSV parsing for import feature (removed from default gems in Ruby 3.4+)
 gem "csv"
 
-# XML parsing for AniDB title dump (removed from default gems in Ruby 3.4+)
-gem "rexml"
+
 
 group :development, :test do
   gem "dotenv-rails"

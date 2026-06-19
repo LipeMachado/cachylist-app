@@ -39,7 +39,7 @@ module MediaItemsHelper
   end
 
   SOURCE_LABELS = {
-    anidb: "AniDB (Anime)",
+    anilist: "AniList (Anime)",
     tmdb_movie: "TMDB (Filme)",
     tmdb_tv: "TMDB (Série)",
     steam: "Steam (Jogo)"

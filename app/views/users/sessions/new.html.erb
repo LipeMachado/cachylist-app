@@ -15,7 +15,13 @@
         </span>
       </label>
       <% if devise_mapping.rememberable? %>
-        <label class="flex items-center gap-2.5 text-[var(--muted)]"><%= f.check_box :remember_me, class: "appearance-none w-5 h-5 inline-grid place-items-center flex-[0_0_20px] m-0 p-0 border border-[var(--line)] bg-[var(--field-bg)]" %> Lembrar de mim</label>
+        <label class="flex items-center gap-2.5 text-[var(--muted)] cursor-pointer select-none remember-container">
+          <%= f.check_box :remember_me, class: "remember-input" %>
+          <span class="remember-box">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          Lembrar de mim
+        </label>
       <% end %>
       <%= f.submit "Entrar", class: "primary-button inline-flex items-center justify-center w-full min-h-[54px] border-0 px-7 text-white font-extrabold cursor-pointer whitespace-nowrap" %>
     <% end %>

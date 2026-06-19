@@ -173,7 +173,7 @@ class MediaItemsController < ApplicationController
   def media_item_params
     params.require(:media_item).permit(
       :title, :description, :category, :status, :platform, :release_year, :rating, :notes,
-      :cover_url, :started_at, :finished_at, :current_episode, :total_episodes, :current_season,
+      :cover_url, :started_at, :finished_at, :current_episode, :total_episodes, :current_season, :total_seasons,
       :current_page, :total_pages, :author, :director, :duration_minutes, :hours_played,
       :wants_platinum, :platinum_completed
     )

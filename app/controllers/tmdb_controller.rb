@@ -47,6 +47,7 @@ class TmdbController < ApplicationController
     else
       base.merge(
         category: "series",
+        total_seasons: details["number_of_seasons"],
         total_episodes: details["number_of_episodes"],
         platform: details.dig("networks", 0, "name")
       )

@@ -295,20 +295,20 @@ export default class extends Controller {
     this._enrichingVisibleCards = true
 
     const cards = this.cardTargets.filter(card => {
-      const aid = card.dataset.aid
-      if (!aid || card.dataset.detailsLoaded === "true") return false
+      const id = card.dataset.anilistId
+      if (!id || card.dataset.detailsLoaded === "true") return false
       const cover = card.querySelector("[data-import-cover]")
       return !cover || cover.src.includes("images.unsplash.com")
     }).slice(0, 2)
 
     for (const card of cards) {
       try {
-        const response = await fetch(`/app/anidb/details?id=${card.dataset.aid}`)
+        const response = await fetch(`/app/anilist/details?id=${card.dataset.anilistId}`)
         const data = await response.json()
         this.fillCardFromDetails(card, {}, data)
         card.dataset.detailsLoaded = "true"
       } catch (_error) {}
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      await new Promise(resolve => setTimeout(resolve, 300))
     }
 
     this._enrichingVisibleCards = false
@@ -329,8 +329,8 @@ export default class extends Controller {
 
   searchPath(category) {
     const paths = {
-      anime: "/app/anidb/search",
-      anime_movie: "/app/anidb/search",
+      anime: "/app/anilist/search",
+      anime_movie: "/app/anilist/search",
       movie: "/app/tmdb/search",
       series: "/app/tmdb/search",
       game: "/app/steam/search"
@@ -342,7 +342,7 @@ export default class extends Controller {
     const id = result.id
     switch (category) {
       case "anime":
-      case "anime_movie": return `/app/anidb/details?id=${id}`
+      case "anime_movie": return `/app/anilist/details?id=${id}`
       case "movie": return `/app/tmdb/details?id=${id}&type=movie`
       case "series": return `/app/tmdb/details?id=${id}&type=tv`
       case "game": return `/app/steam/details?id=${id}`

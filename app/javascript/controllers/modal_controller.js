@@ -44,6 +44,8 @@ export default class extends Controller {
       this.statusTarget.value = event.currentTarget.dataset.statusValue
     }
 
+    this._scrollY = window.scrollY
+    document.body.style.top = `-${this._scrollY}px`
     this.modalTarget.hidden = false
     document.body.classList.add("modal-open")
     this.dialogTarget.scrollTop = 0
@@ -73,6 +75,7 @@ export default class extends Controller {
     event.preventDefault()
 
     if (this.dirty) {
+      this.lockModalScroll()
       this.confirmBackdropTarget.hidden = false
       this.confirmTarget.hidden = false
       gsap.fromTo(this.confirmBackdropTarget, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" })
@@ -87,6 +90,7 @@ export default class extends Controller {
     event.preventDefault()
     this.confirmTarget.hidden = true
     this.confirmBackdropTarget.hidden = true
+    this.unlockModalScroll()
   }
 
   discard(event) {
@@ -98,6 +102,7 @@ export default class extends Controller {
   }
 
   close() {
+    this.unlockModalScroll()
     gsap.to(this.dialogTarget, { opacity: 0, y: 16, scale: 0.98, duration: 0.2, ease: "power2.in" })
     gsap.to(this.modalTarget, {
       opacity: 0,
@@ -106,8 +111,20 @@ export default class extends Controller {
       onComplete: () => {
         this.modalTarget.hidden = true
         document.body.classList.remove("modal-open")
+        document.body.style.top = ""
+        window.scrollTo(0, this._scrollY || 0)
       }
     })
+  }
+
+  lockModalScroll() {
+    if (!this.hasModalTarget) return
+    this.modalTarget.style.overflow = "hidden"
+  }
+
+  unlockModalScroll() {
+    if (!this.hasModalTarget) return
+    this.modalTarget.style.overflow = ""
   }
 
   onSubmitEnd(event) {
