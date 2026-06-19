@@ -7,10 +7,13 @@ export default class extends Controller {
     this.selectedIndex = -1
     this.timeout = null
     this.resultsData = []
+    this.abortController = null
+    this.searchToken = 0
   }
 
   search() {
     clearTimeout(this.timeout)
+    this.abortController?.abort()
     if (!this.selectedCategory().match(/^(anime|anime_movie)$/)) {
       this.hideResults()
       return
@@ -22,12 +25,35 @@ export default class extends Controller {
       return
     }
     this.showSkeleton()
+    const token = ++this.searchToken
     this.timeout = setTimeout(() => {
-      fetch(`/app/anilist/search?query=${encodeURIComponent(query)}`)
-        .then(r => r.json())
-        .then(data => this.showResults(data))
-        .catch(() => this.hideResults())
+      this.performSearch(query, token)
     }, 350)
+  }
+
+  async performSearch(query, token) {
+    this.abortController = new AbortController()
+    const timeout = setTimeout(() => this.abortController.abort(), 12000)
+
+    try {
+      const response = await fetch(`/app/anilist/search?query=${encodeURIComponent(query)}`, {
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
+        signal: this.abortController.signal
+      })
+
+      if (!response.ok) throw new Error(`AniList search failed: ${response.status}`)
+
+      const data = await response.json()
+      if (token !== this.searchToken) return
+
+      this.showResults(Array.isArray(data) ? data : [])
+    } catch (error) {
+      if (token !== this.searchToken || error.name === "AbortError") return
+      this.showMessage("Não foi possível buscar no AniList. Tente novamente.")
+    } finally {
+      clearTimeout(timeout)
+    }
   }
 
   skeletonHTML() {
@@ -53,7 +79,10 @@ export default class extends Controller {
 
   showResults(results) {
     this.resultsData = results
-    if (results.length === 0) { this.hideResults(); return }
+    if (results.length === 0) {
+      this.showMessage("Nenhum anime encontrado no AniList.")
+      return
+    }
 
     this.resultsTarget.innerHTML = results.map((r, i) => `
       <button type="button" class="flex items-center gap-3 px-4 py-3 text-left w-full hover:bg-[rgba(255,255,255,.06)] cursor-pointer border-0 bg-transparent text-[var(--text)] text-sm ${i === 0 ? 'bg-[rgba(255,255,255,.06)]' : ''}" data-index="${i}" data-action="anilist-search#select">
@@ -104,6 +133,13 @@ export default class extends Controller {
     this.resultsTarget.hidden = true
     this.selectedIndex = -1
     this.resultsData = []
+  }
+
+  showMessage(message) {
+    this.resultsData = []
+    this.selectedIndex = -1
+    this.resultsTarget.innerHTML = `<div class="px-4 py-3 text-[var(--muted)] text-sm">${this.escapeHtml(message)}</div>`
+    this.resultsTarget.hidden = false
   }
 
   select(event) {
