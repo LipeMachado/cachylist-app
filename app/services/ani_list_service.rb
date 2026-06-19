@@ -5,6 +5,7 @@ class AniListService
   GRAPHQL_URL = "https://graphql.anilist.co"
   SEARCH_LIMIT = 8
   SEARCH_CACHE_TTL = 24.hours
+  SEARCH_CACHE_VERSION = "v2"
   DETAILS_CACHE_TTL = 7.days
   DETAILS_CACHE_VERSION = "v1"
 
@@ -12,7 +13,7 @@ class AniListService
     normalized = normalize(query)
     return [] if normalized.blank?
 
-    cache_key = "anilist:search:#{normalized}"
+    cache_key = "anilist:search:#{SEARCH_CACHE_VERSION}:#{normalized}"
     cached = Rails.cache.read(cache_key)
     return cached if cached
 
@@ -22,7 +23,7 @@ class AniListService
     media = response.dig("data", "Page", "media") || []
     results = media.map { |m| format_search_result(m) }
 
-    Rails.cache.write(cache_key, results, expires_in: SEARCH_CACHE_TTL)
+    Rails.cache.write(cache_key, results, expires_in: SEARCH_CACHE_TTL) if results.any?
     results
   rescue StandardError => e
     Rails.logger.error "AniList search error: #{e.message}"
