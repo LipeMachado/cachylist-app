@@ -137,13 +137,13 @@ class AniListService
 
   def read_cache(key)
     Rails.cache.read(key)
-  rescue ActiveRecord::StatementInvalid
+  rescue StandardError
     nil
   end
 
   def write_cache(key, value, ttl)
     Rails.cache.write(key, value, expires_in: ttl)
-  rescue ActiveRecord::StatementInvalid
+  rescue StandardError
     nil
   end
 end
