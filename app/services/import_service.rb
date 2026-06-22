@@ -2,7 +2,8 @@ require "csv"
 
 class ImportService
   PREVIEW_LIMIT = 50
-  MAX_CONCURRENT = 5
+  MAX_CONCURRENT = 1
+  REQUEST_DELAY = 0.7
 
   def parse_file(uploaded_file)
     content = uploaded_file.read
@@ -21,25 +22,12 @@ class ImportService
   end
 
   def identify_titles(titles)
-    results = Array.new(titles.size)
-    mutex = Mutex.new
-    queue = Queue.new
-    titles.each_with_index { |t, i| queue << [t, i] }
-
-    threads = MAX_CONCURRENT.times.map do
-      Thread.new do
-        loop do
-          work = nil
-          mutex.synchronize { work = queue.pop(true) rescue nil }
-          break unless work
-          title, idx = work
-          result = identify_anilist(title)
-          mutex.synchronize { results[idx] = result }
-        end
-      end
+    results = []
+    titles.each_with_index do |title, idx|
+      result = identify_anilist(title)
+      results << result
+      sleep(REQUEST_DELAY) if idx < titles.size - 1
     end
-
-    threads.each(&:join)
     results
   end
 
@@ -48,7 +36,7 @@ class ImportService
       {
         original_title: title,
         title: title,
-        category: "movie",
+        category: "anime",
         cover_url: nil,
         description: nil,
         release_year: nil,
@@ -182,7 +170,7 @@ class ImportService
     else
       {
         original_title: title, title: title,
-        category: "movie",
+        category: "anime",
         cover_url: nil, description: nil, release_year: nil, platform: nil,
         source: nil, anilist_id: nil
       }
@@ -191,7 +179,7 @@ class ImportService
     Rails.logger.error "ImportService AniList identify error for #{title}: #{e.message}"
     {
       original_title: title, title: title,
-      category: "movie",
+      category: "anime",
       cover_url: nil, description: nil, release_year: nil, platform: nil,
       source: nil, anilist_id: nil
     }

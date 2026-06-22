@@ -102,9 +102,15 @@ export default class extends Controller {
     container.hidden = false
 
     try {
-      const response = await fetch(`${apiPath}?query=${encodeURIComponent(title)}`)
+      let response = await fetch(`${apiPath}?query=${encodeURIComponent(title)}`)
       if (!response.ok) throw new Error()
-      const data = await response.json()
+      let data = await response.json()
+
+      if (data.length === 0 && category === "movie") {
+        const fallbackUrl = "/app/anilist/search"
+        response = await fetch(`${fallbackUrl}?query=${encodeURIComponent(title)}`)
+        if (response.ok) data = await response.json()
+      }
 
       if (data.length === 0) {
         container.innerHTML = `<div class="px-4 py-6 text-xs text-[var(--tertiary)] text-center">Nenhum resultado encontrado.</div>`
