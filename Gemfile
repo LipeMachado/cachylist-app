@@ -68,7 +68,7 @@ end
 
 gem "devise", "~> 5.0"
 
-gem "tailwindcss-rails", "~> 4.4"
+gem "tailwindcss-rails", "~> 4.6"
 
 gem "lucide-rails", "~> 0.7.4"
 
